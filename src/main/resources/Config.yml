@@ -1,0 +1,7 @@
+case:
+  test:
+    name: testname
+    items:
+      material: STONE
+        ilosc: 10
+        metadata: 1
