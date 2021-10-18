@@ -7,19 +7,39 @@ import java.util.HashMap;
 
 public class Case {
 
-    int id;
+    private String id;
 
-    String name;
+    private String name;
 
-    ArrayList<ItemStack> items;
+    private ArrayList<ItemStack> items;
 
-    ArrayList<String> lore;
+    private ArrayList<String> lore;
 
-    public int getId() {
+    private ItemStack chest;
+
+    private ItemStack key;
+
+    public ItemStack getChest() {
+        return chest;
+    }
+
+    public void setChest(ItemStack chest) {
+        this.chest = chest;
+    }
+
+    public ItemStack getKey() {
+        return key;
+    }
+
+    public void setKey(ItemStack key) {
+        this.key = key;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -54,16 +74,25 @@ public class Case {
         items.add(itemStack);
     }
 
-    private static HashMap<Integer, Case> save = new HashMap<>();
+    private static HashMap<String, Case> save = new HashMap<>();
+    private static ArrayList<String> idall = new ArrayList<>();
 
-    public Case(int id, String name){
+
+    public Case(String id, String name){
+        if (!idall.equals(id)){
+            idall.add(id);
+        }
         this.id=id;
         this.name=name;
         save.put(id, this);
     }
 
-    public static Case get(int id){
+    public static Case get(String id){
         return save.get(id);
+    }
+
+    public static ArrayList<String> getAllID(){
+        return idall;
     }
 
 }

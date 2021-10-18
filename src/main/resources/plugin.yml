@@ -3,3 +3,6 @@ version: '${project.version}'
 main: pl.rex89m.mdrop.MDrop
 load: STARTUP
 authors: [ rex89m ]
+commands:
+  open:
+  case:
