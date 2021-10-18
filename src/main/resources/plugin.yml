@@ -6,3 +6,4 @@ authors: [ rex89m ]
 commands:
   open:
   case:
+  top:

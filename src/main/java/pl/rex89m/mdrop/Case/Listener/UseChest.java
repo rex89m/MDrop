@@ -33,6 +33,7 @@ public class UseChest implements Listener {
                                     e.getPlayer().getInventory().removeItem(var1);
                                     e.getPlayer().getInventory().removeItem(var2);
                                     plugin.caseOpen.open(e.getPlayer(), i);
+                                    plugin.sql.addTopPlayerCase(e.getPlayer().getName(), i);
                                     break;
                                 }else{
                                     e.getPlayer().sendMessage("Brak szkrzyni");
@@ -50,6 +51,7 @@ public class UseChest implements Listener {
                                     e.getPlayer().getInventory().removeItem(var1);
                                     e.getPlayer().getInventory().removeItem(var2);
                                     plugin.caseOpen.open(e.getPlayer(), i);
+                                    plugin.sql.addTopPlayerCase(e.getPlayer().getName(), i);
                                     break;
                                 }else{
                                     e.getPlayer().sendMessage("Brak klucza");

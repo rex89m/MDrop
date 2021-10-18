@@ -1,5 +1,6 @@
 package pl.rex89m.mdrop;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.rex89m.mdrop.Baza.SQL;
 import pl.rex89m.mdrop.Case.CaseOpen;
@@ -7,7 +8,9 @@ import pl.rex89m.mdrop.Case.Listener.CaseClick;
 import pl.rex89m.mdrop.Case.Listener.UseChest;
 import pl.rex89m.mdrop.Commands.CaseCommands;
 import pl.rex89m.mdrop.Commands.Open;
+import pl.rex89m.mdrop.Commands.TopCommands;
 import pl.rex89m.mdrop.Config.Yml;
+import pl.rex89m.mdrop.Events.Join;
 
 public final class MDrop extends JavaPlugin {
 
@@ -17,7 +20,8 @@ public final class MDrop extends JavaPlugin {
     public final CaseClick caseClick;
     public final UseChest useChest;
     public final SQL sql;
-
+    public final Join join;
+    public final TopCommands topCommands;
 
     public MDrop(){
         this.caseOpen= new CaseOpen(this);
@@ -26,7 +30,8 @@ public final class MDrop extends JavaPlugin {
         this.caseClick= new CaseClick(this);
         this.useChest= new UseChest(this);
         this.sql= new SQL(this);
-
+        this.join= new Join(this);
+        this.topCommands= new TopCommands(this);
     }
 
 
@@ -34,8 +39,11 @@ public final class MDrop extends JavaPlugin {
     public void onEnable() {
         getCommand("open").setExecutor(new Open(this));
         getCommand("case").setExecutor(new CaseCommands());
+        getCommand("top").setExecutor(new TopCommands(this));
+
         getServer().getPluginManager().registerEvents(caseClick, this);
         getServer().getPluginManager().registerEvents(useChest, this);
+        getServer().getPluginManager().registerEvents(join, this);
 
     }
 
