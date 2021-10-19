@@ -5,11 +5,13 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import pl.rex89m.mdrop.MDrop;
+import pl.rex89m.mdrop.Player.PlayerSettings;
 import pl.rex89m.mdrop.Stoniarka.Stoniarka;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class SQL {
 
@@ -47,9 +49,12 @@ public class SQL {
     public boolean createTables()  {
         String TopOpenChest = "CREATE TABLE IF NOT EXISTS TopOpenChest (ID INTEGER PRIMARY KEY AUTOINCREMENT, nick varchar(255), uuid varchar(255), case_id varchar(255), ilosc int)";
         String Stoniarka = "CREATE TABLE IF NOT EXISTS Stoniarka (ID INTEGER PRIMARY KEY AUTOINCREMENT, location varchar(255))";
+        String Settings = "CREATE TABLE IF NOT EXISTS Settings (ID INTEGER PRIMARY KEY AUTOINCREMENT, nick varchar(255), uuid varchar(255), dropvalue varchar(255))";
+
         try {
             stat.execute(TopOpenChest);
             stat.execute(Stoniarka);
+            stat.execute(Settings);
         } catch (SQLException e) {
             System.err.println("Blad przy tworzeniu tabeli");
             e.printStackTrace();
@@ -71,6 +76,23 @@ public class SQL {
             e.printStackTrace();
         }
     }
+
+    public void addSettingsPlayer(Player p, String settings){
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into Settings values (NULL, ?,?,?);");
+            prepStmt.setString(1, p.getName());
+            prepStmt.setString(2, p.getUniqueId().toString());
+            prepStmt.setString(3, settings);
+            prepStmt.execute();
+            PlayerSettings playerSettings = new PlayerSettings(p);
+            playerSettings.setDrop(settings);
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu settings");
+            e.printStackTrace();
+        }
+    }
+
     public void rmoveLocationStoniarka(Location l){
         String var = l.getWorld().getName()+"#"+l.getBlockX()+"#"+l.getBlockY()+"#"+l.getBlockZ();
         try {
@@ -98,6 +120,20 @@ public class SQL {
         return var;
     }
 
+    public PlayerSettings loadPlayerSettings(Player p){
+        PlayerSettings playerSettings = null;
+        try {
+            ResultSet result = stat.executeQuery("SELECT * FROM Settings WHERE uuid='"+p.getUniqueId()+"'");
+            while(result.next()) {
+                playerSettings = new PlayerSettings(p);
+                playerSettings.setDrop(result.getString("dropvalue"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return playerSettings;
+    }
+
 
     public boolean inserPlayerTopCase(String nick, String caseNazwa) {
         if (!hasPlayerCaseTop(nick, caseNazwa)) {
@@ -113,6 +149,20 @@ public class SQL {
                 e.printStackTrace();
                 return false;
             }
+        }
+        return true;
+    }
+
+    public boolean updateSettingsDrop(Player p, String update) {
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "UPDATE Settings SET dropvalue='"+update+"' WHERE uuid='"+p.getUniqueId()+"';");
+            prepStmt.execute();
+            PlayerSettings.get(p.getUniqueId()).setDrop(update);
+        } catch (SQLException e) {
+            System.err.println("Blad przy wstawianiu settings");
+            e.printStackTrace();
+            return false;
         }
         return true;
     }

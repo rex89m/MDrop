@@ -1,17 +1,14 @@
 package pl.rex89m.mdrop;
 
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.rex89m.mdrop.Baza.SQL;
 import pl.rex89m.mdrop.Case.CaseOpen;
 import pl.rex89m.mdrop.Case.Listener.CaseClick;
 import pl.rex89m.mdrop.Case.Listener.UseChest;
-import pl.rex89m.mdrop.Commands.CaseCommands;
-import pl.rex89m.mdrop.Commands.Open;
-import pl.rex89m.mdrop.Commands.Stoniarka;
-import pl.rex89m.mdrop.Commands.TopCommands;
+import pl.rex89m.mdrop.Commands.*;
 import pl.rex89m.mdrop.Config.Yml;
-import pl.rex89m.mdrop.Drop.Drop;
+import pl.rex89m.mdrop.Drop.Listener.DropEvent;
+import pl.rex89m.mdrop.Drop.Listener.InventoryClick;
 import pl.rex89m.mdrop.Events.Join;
 import pl.rex89m.mdrop.Stoniarka.Listener.BreakStoniarka;
 import pl.rex89m.mdrop.Stoniarka.Listener.PlaceStoniarka;
@@ -28,7 +25,8 @@ public final class MDrop extends JavaPlugin {
     public final TopCommands topCommands;
     public final PlaceStoniarka placeStoniarka;
     public final BreakStoniarka breakStoniarka;
-    public final Drop drop;
+    public final DropEvent dropEvent;
+    public final InventoryClick inventoryClick;
 
     public MDrop(){
         this.caseOpen= new CaseOpen(this);
@@ -41,7 +39,9 @@ public final class MDrop extends JavaPlugin {
         this.topCommands= new TopCommands(this);
         this.placeStoniarka= new PlaceStoniarka(this);
         this.breakStoniarka= new BreakStoniarka(this);
-        this.drop= new Drop(this);
+        this.dropEvent= new DropEvent(this);
+        this.inventoryClick= new InventoryClick(this);
+
     }
 
     @Override
@@ -50,11 +50,16 @@ public final class MDrop extends JavaPlugin {
         getCommand("case").setExecutor(new CaseCommands());
         getCommand("top").setExecutor(new TopCommands(this));
         getCommand("stoniarka").setExecutor(new Stoniarka());
+        getCommand("drop").setExecutor(new DropCommands());
+
         getServer().getPluginManager().registerEvents(caseClick, this);
         getServer().getPluginManager().registerEvents(useChest, this);
         getServer().getPluginManager().registerEvents(join, this);
         getServer().getPluginManager().registerEvents(placeStoniarka, this);
         getServer().getPluginManager().registerEvents(breakStoniarka, this);
+        getServer().getPluginManager().registerEvents(dropEvent, this);
+        getServer().getPluginManager().registerEvents(inventoryClick, this);
+
         pl.rex89m.mdrop.Stoniarka.Stoniarka.setIsStoniarka(sql.getAllStoniarka());
     }
 

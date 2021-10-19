@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pl.rex89m.mdrop.Case.Case;
+import pl.rex89m.mdrop.Drop.Drop;
 import pl.rex89m.mdrop.MDrop;
 import pl.rex89m.mdrop.Stoniarka.Stoniarka;
 
@@ -31,6 +32,9 @@ public class Yml {
     YamlConfiguration configuration;
 
     ConfigurationSection section;
+
+    ConfigurationSection sectionDrop;
+
 
     public void load() {
         if (!ymlFille.exists()){
@@ -64,6 +68,12 @@ public class Yml {
         }else{
             section = configuration.createSection("case");
         }
+        if (configuration.isConfigurationSection("drop")){
+            sectionDrop = configuration.getConfigurationSection("drop");
+        }else{
+            sectionDrop = configuration.createSection("drop");
+        }
+
         for (String i :section.getKeys(false)){
             Case configCase = new Case(i, color(section.getString(i+".name_Inventory")));
             ItemStack itemStackChest = new ItemStack(Material.getMaterial(section.getString(i+".material_chest")));
@@ -93,6 +103,20 @@ public class Yml {
                 }
                 itemStack.setItemMeta(itemMeta);
                 configCase.addItem(itemStack);
+            }
+        }
+        for (String i : sectionDrop.getKeys(false)) {
+            if (!i.equals("name") && !i.equals("size")) {
+                Drop drop = new Drop(color(sectionDrop.getString(i + ".name")), Material.getMaterial(i), Double.parseDouble(sectionDrop.getString(i + ".chance")));
+                if (sectionDrop.isSet(i + ".lore")) {
+                    drop.setLore(color(sectionDrop.getStringList(i + ".lore")));
+                }
+                drop.setLoreInventory(color(sectionDrop.getStringList(i + ".inventory_lore")));
+                drop.setSlot(sectionDrop.getInt(i + ".inventory_slot"));
+            }else{
+                Drop.Inventory_name=color(sectionDrop.getString("name"));
+                Drop.Inventory_size=sectionDrop.getInt("size");
+
             }
         }
     }
