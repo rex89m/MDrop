@@ -1,8 +1,11 @@
 package pl.rex89m.mdrop.Baza;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import pl.rex89m.mdrop.MDrop;
+import pl.rex89m.mdrop.Stoniarka.Stoniarka;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -43,8 +46,10 @@ public class SQL {
 
     public boolean createTables()  {
         String TopOpenChest = "CREATE TABLE IF NOT EXISTS TopOpenChest (ID INTEGER PRIMARY KEY AUTOINCREMENT, nick varchar(255), uuid varchar(255), case_id varchar(255), ilosc int)";
+        String Stoniarka = "CREATE TABLE IF NOT EXISTS Stoniarka (ID INTEGER PRIMARY KEY AUTOINCREMENT, location varchar(255))";
         try {
             stat.execute(TopOpenChest);
+            stat.execute(Stoniarka);
         } catch (SQLException e) {
             System.err.println("Blad przy tworzeniu tabeli");
             e.printStackTrace();
@@ -52,6 +57,47 @@ public class SQL {
         }
         return true;
     }
+
+    public void addLocationStoniarka(Location l){
+        String var = l.getWorld().getName()+"#"+l.getBlockX()+"#"+l.getBlockY()+"#"+l.getBlockZ();
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into Stoniarka values (NULL, ?);");
+            prepStmt.setString(1, var);
+            prepStmt.execute();
+            Stoniarka.addLocation(l);
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu Stoniarki");
+            e.printStackTrace();
+        }
+    }
+    public void rmoveLocationStoniarka(Location l){
+        String var = l.getWorld().getName()+"#"+l.getBlockX()+"#"+l.getBlockY()+"#"+l.getBlockZ();
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "DELETE FROM Stoniarka WHERE location='"+var+"';");
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy usuwaniu Stoniarki");
+            e.printStackTrace();
+        }
+    }
+
+    public HashMap<Location, Boolean> getAllStoniarka() {
+        HashMap<Location, Boolean> var = new HashMap<>();
+        try {
+            ResultSet result = stat.executeQuery("SELECT * FROM Stoniarka");
+            while(result.next()) {
+                String[] varloc = result.getString("location").split("#");
+                var.put(new Location(Bukkit.getWorld(varloc[0]), Integer.parseInt(varloc[1]), Integer.parseInt(varloc[2]), Integer.parseInt(varloc[3])), true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return var;
+        }
+        return var;
+    }
+
 
     public boolean inserPlayerTopCase(String nick, String caseNazwa) {
         if (!hasPlayerCaseTop(nick, caseNazwa)) {
@@ -98,12 +144,13 @@ public class SQL {
         }
         return var;
     }
-    public HashMap<String, String> getAllTopPlayerCase(String caseNazwa) {
-        HashMap<String, String> var = new HashMap<>();
+
+    public HashMap<String, Integer> getAllTopPlayerCase(String caseNazwa) {
+        HashMap<String, Integer> var = new HashMap<>();
         try {
             ResultSet result = stat.executeQuery("SELECT * FROM TopOpenChest WHERE case_id = '"+caseNazwa+"'");
             while(result.next()) {
-                var.put(result.getString("nick"), result.getString("ilosc"));
+                var.put(result.getString("nick"), result.getInt("ilosc"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

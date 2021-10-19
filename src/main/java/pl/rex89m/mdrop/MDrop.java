@@ -8,9 +8,13 @@ import pl.rex89m.mdrop.Case.Listener.CaseClick;
 import pl.rex89m.mdrop.Case.Listener.UseChest;
 import pl.rex89m.mdrop.Commands.CaseCommands;
 import pl.rex89m.mdrop.Commands.Open;
+import pl.rex89m.mdrop.Commands.Stoniarka;
 import pl.rex89m.mdrop.Commands.TopCommands;
 import pl.rex89m.mdrop.Config.Yml;
+import pl.rex89m.mdrop.Drop.Drop;
 import pl.rex89m.mdrop.Events.Join;
+import pl.rex89m.mdrop.Stoniarka.Listener.BreakStoniarka;
+import pl.rex89m.mdrop.Stoniarka.Listener.PlaceStoniarka;
 
 public final class MDrop extends JavaPlugin {
 
@@ -22,6 +26,9 @@ public final class MDrop extends JavaPlugin {
     public final SQL sql;
     public final Join join;
     public final TopCommands topCommands;
+    public final PlaceStoniarka placeStoniarka;
+    public final BreakStoniarka breakStoniarka;
+    public final Drop drop;
 
     public MDrop(){
         this.caseOpen= new CaseOpen(this);
@@ -32,19 +39,23 @@ public final class MDrop extends JavaPlugin {
         this.sql= new SQL(this);
         this.join= new Join(this);
         this.topCommands= new TopCommands(this);
+        this.placeStoniarka= new PlaceStoniarka(this);
+        this.breakStoniarka= new BreakStoniarka(this);
+        this.drop= new Drop(this);
     }
-
 
     @Override
     public void onEnable() {
         getCommand("open").setExecutor(new Open(this));
         getCommand("case").setExecutor(new CaseCommands());
         getCommand("top").setExecutor(new TopCommands(this));
-
+        getCommand("stoniarka").setExecutor(new Stoniarka());
         getServer().getPluginManager().registerEvents(caseClick, this);
         getServer().getPluginManager().registerEvents(useChest, this);
         getServer().getPluginManager().registerEvents(join, this);
-
+        getServer().getPluginManager().registerEvents(placeStoniarka, this);
+        getServer().getPluginManager().registerEvents(breakStoniarka, this);
+        pl.rex89m.mdrop.Stoniarka.Stoniarka.setIsStoniarka(sql.getAllStoniarka());
     }
 
     @Override

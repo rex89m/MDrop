@@ -21,10 +21,17 @@ public class TopCommands implements CommandExecutor {
         if (args.length==1) {
             for (String i : Case.getAllID()){
                 if (args[0].equalsIgnoreCase(i)){
-                    SortedMap<> values = new TreeSet<>(plugin.sql.getAllTopPlayerCase(args[0]).values());
-                    Collections.synchronizedSortedMap()
-                    for (String i2 : values){
-                        sender.sendMessage(i2);
+                    Map<String, Integer> map = plugin.sql.getAllTopPlayerCase(args[0]);
+
+                    List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(map.entrySet());
+                    Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+                        @Override
+                        public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                            return o2.getValue().compareTo(o1.getValue());
+                        }
+                    });
+                    for (Map.Entry<String, Integer> i2: list){
+                        sender.sendMessage(i2.getKey() + " "+i2.getValue());
                     }
                     break;
                 }

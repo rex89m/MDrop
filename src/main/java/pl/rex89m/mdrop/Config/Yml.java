@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pl.rex89m.mdrop.Case.Case;
 import pl.rex89m.mdrop.MDrop;
+import pl.rex89m.mdrop.Stoniarka.Stoniarka;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,6 +37,28 @@ public class Yml {
             plugin.saveDefaultConfig();
         }
         configuration = YamlConfiguration.loadConfiguration(ymlFille);
+
+        if (configuration.isSet("Stoniarka.name")){
+            Stoniarka.setName(color(configuration.getString("Stoniarka.name")));
+        }else{
+            Stoniarka.setName("error name");
+        }
+        if (configuration.isSet("Stoniarka.lore")){
+            Stoniarka.setLore(color(configuration.getStringList("Stoniarka.lore")));
+        }else{
+            Stoniarka.setName("error lore");
+        }
+        if (configuration.isSet("Stoniarka.place_message")){
+            Stoniarka.setPlaceMessage(color(configuration.getString("Stoniarka.place_message")));
+        }else{
+            Stoniarka.setName("error place_message");
+        }
+        if (configuration.isSet("Stoniarka.break_message")){
+            Stoniarka.setBreakMessage(color(configuration.getString("Stoniarka.break_message")));
+        }else{
+            Stoniarka.setName("error break_message");
+        }
+
         if (configuration.isConfigurationSection("case")){
             section = configuration.getConfigurationSection("case");
         }else{
@@ -82,7 +105,6 @@ public class Yml {
         for (String i: s){
             lista.add(ChatColor.translateAlternateColorCodes('&',i));
         }
-        System.out.println(lista);
         return lista;
     }
 }
