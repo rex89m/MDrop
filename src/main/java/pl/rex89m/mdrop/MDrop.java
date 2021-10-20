@@ -1,5 +1,7 @@
 package pl.rex89m.mdrop;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.rex89m.mdrop.Baza.SQL;
 import pl.rex89m.mdrop.Case.CaseOpen;
@@ -51,7 +53,6 @@ public final class MDrop extends JavaPlugin {
         getCommand("top").setExecutor(new TopCommands(this));
         getCommand("stoniarka").setExecutor(new Stoniarka());
         getCommand("drop").setExecutor(new DropCommands());
-
         getServer().getPluginManager().registerEvents(caseClick, this);
         getServer().getPluginManager().registerEvents(useChest, this);
         getServer().getPluginManager().registerEvents(join, this);
@@ -59,8 +60,10 @@ public final class MDrop extends JavaPlugin {
         getServer().getPluginManager().registerEvents(breakStoniarka, this);
         getServer().getPluginManager().registerEvents(dropEvent, this);
         getServer().getPluginManager().registerEvents(inventoryClick, this);
-
         pl.rex89m.mdrop.Stoniarka.Stoniarka.setIsStoniarka(sql.getAllStoniarka());
+        for (Player i: Bukkit.getOnlinePlayers()){
+            join.load(i);
+        }
     }
 
     @Override

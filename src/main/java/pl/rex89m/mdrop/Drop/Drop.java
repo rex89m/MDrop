@@ -37,7 +37,6 @@ public class Drop {
 
     private List<String> loreInventory;
 
-
     private Double chance;
 
     private static HashMap<Material, Drop> save = new HashMap<>();
