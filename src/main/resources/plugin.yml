@@ -3,9 +3,12 @@ version: '${project.version}'
 main: pl.rex89m.mdrop.MDrop
 load: STARTUP
 authors: [ rex89m ]
+depend:
+  - BossBarAPI
 commands:
   open:
   case:
   top:
   stoniarka:
   drop:
+  efekty:

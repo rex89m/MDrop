@@ -9,6 +9,7 @@ import pl.rex89m.mdrop.Case.Case;
 import pl.rex89m.mdrop.Drop.Drop;
 import pl.rex89m.mdrop.MDrop;
 import pl.rex89m.mdrop.Player.PlayerSettings;
+import pl.rex89m.mdrop.BossBar.Bossy;
 
 import java.util.HashMap;
 
@@ -22,6 +23,11 @@ public class Join implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e){
+        Bossy bossy = new Bossy(plugin);
+        bossy.set(e.getPlayer(), "Your message", 0.5F);
+        bossy.setText(e.getPlayer(), "Change the message");
+        bossy.setPercent(e.getPlayer(), 1F); // change health/percent (between 0 and 1)
+        bossy.show(e.getPlayer());
         load(e.getPlayer());
     }
 

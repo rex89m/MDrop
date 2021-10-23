@@ -3,6 +3,9 @@ package pl.rex89m.mdrop;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
+import pl.rex89m.mdrop.AntyLog.AntyLogListener;
+import pl.rex89m.mdrop.AntyLog.Every;
 import pl.rex89m.mdrop.Baza.SQL;
 import pl.rex89m.mdrop.Case.CaseOpen;
 import pl.rex89m.mdrop.Case.Listener.CaseClick;
@@ -29,6 +32,11 @@ public final class MDrop extends JavaPlugin {
     public final BreakStoniarka breakStoniarka;
     public final DropEvent dropEvent;
     public final InventoryClick inventoryClick;
+    public final AntyLogListener antyLogListener;
+    public final Every every;
+    public final Effekty effekty;
+
+
 
     public MDrop(){
         this.caseOpen= new CaseOpen(this);
@@ -43,7 +51,9 @@ public final class MDrop extends JavaPlugin {
         this.breakStoniarka= new BreakStoniarka(this);
         this.dropEvent= new DropEvent(this);
         this.inventoryClick= new InventoryClick(this);
-
+        this.antyLogListener= new AntyLogListener(this);
+        this.every= new Every(this);
+        this.effekty = new Effekty(this);
     }
 
     @Override
@@ -53,6 +63,8 @@ public final class MDrop extends JavaPlugin {
         getCommand("top").setExecutor(new TopCommands(this));
         getCommand("stoniarka").setExecutor(new Stoniarka());
         getCommand("drop").setExecutor(new DropCommands());
+        getCommand("efekty").setExecutor(new EffectCommands());
+
         getServer().getPluginManager().registerEvents(caseClick, this);
         getServer().getPluginManager().registerEvents(useChest, this);
         getServer().getPluginManager().registerEvents(join, this);
@@ -60,10 +72,15 @@ public final class MDrop extends JavaPlugin {
         getServer().getPluginManager().registerEvents(breakStoniarka, this);
         getServer().getPluginManager().registerEvents(dropEvent, this);
         getServer().getPluginManager().registerEvents(inventoryClick, this);
+        getServer().getPluginManager().registerEvents(antyLogListener, this);
+        getServer().getPluginManager().registerEvents(effekty, this);
+
         pl.rex89m.mdrop.Stoniarka.Stoniarka.setIsStoniarka(sql.getAllStoniarka());
+
         for (Player i: Bukkit.getOnlinePlayers()){
             join.load(i);
         }
+        every.every();
     }
 
     @Override
