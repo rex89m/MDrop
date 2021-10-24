@@ -1,7 +1,7 @@
 package pl.rex89m.mdrop;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -19,7 +19,7 @@ public class Effekty implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent e){
-        if (e.getWhoClicked().getOpenInventory().getTitle().equals("Efekty")){
+        if (e.getWhoClicked().getOpenInventory().getTitle().equals(ChatColor.translateAlternateColorCodes('&',"&3Efekty"))){
             e.setCancelled(true);
             if (e.getCurrentItem()!=null){
                 if (e.getCurrentItem().getItemMeta()!=null){
@@ -38,7 +38,7 @@ public class Effekty implements Listener {
                                 e.getWhoClicked().addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20*60*1,1,false, true));
                             }
                         }else if (e.getRawSlot()==12){
-                            ItemStack stack = new ItemStack(Material.EMERALD_BLOCK, 64*2);
+                            ItemStack stack = new ItemStack(Material.EMERALD_BLOCK, 64);
                             if (e.getWhoClicked().getInventory().containsAtLeast(stack, stack.getAmount())){
                                 e.getWhoClicked().getInventory().removeItem(stack);
                                 e.getWhoClicked().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20*60*2,0,false, true));
@@ -57,7 +57,7 @@ public class Effekty implements Listener {
                                 e.getWhoClicked().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20*60*5,1,false, true));
                             }
                         }else if (e.getRawSlot()==14){
-                            ItemStack stack = new ItemStack(Material.EMERALD_BLOCK, 64*2);
+                            ItemStack stack = new ItemStack(Material.EMERALD_BLOCK, 64);
                             if (e.getWhoClicked().getInventory().containsAtLeast(stack, stack.getAmount())){
                                 e.getWhoClicked().getInventory().removeItem(stack);
                                 e.getWhoClicked().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20*60*2,0,false, true));

@@ -86,17 +86,5 @@
             <version>1.16.6</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>4.3.0</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.comphenix.executors</groupId>
-                    <artifactId>BukkitExecutors</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
     </dependencies>
 </project>

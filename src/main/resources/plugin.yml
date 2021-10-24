@@ -5,6 +5,7 @@ load: STARTUP
 authors: [ rex89m ]
 depend:
   - BossBarAPI
+  - Essentials
 commands:
   open:
   case:
@@ -12,3 +13,4 @@ commands:
   stoniarka:
   drop:
   efekty:
+  kit:

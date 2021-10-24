@@ -1,5 +1,6 @@
 package pl.rex89m.mdrop;
 
+import com.earth2me.essentials.Essentials;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,6 +36,7 @@ public final class MDrop extends JavaPlugin {
     public final AntyLogListener antyLogListener;
     public final Every every;
     public final Effekty effekty;
+    public final KitCommands kitCommands;
 
 
 
@@ -54,6 +56,8 @@ public final class MDrop extends JavaPlugin {
         this.antyLogListener= new AntyLogListener(this);
         this.every= new Every(this);
         this.effekty = new Effekty(this);
+        this.kitCommands = new KitCommands(this);
+
     }
 
     @Override
@@ -64,6 +68,7 @@ public final class MDrop extends JavaPlugin {
         getCommand("stoniarka").setExecutor(new Stoniarka());
         getCommand("drop").setExecutor(new DropCommands());
         getCommand("efekty").setExecutor(new EffectCommands());
+        getCommand("kit").setExecutor(new KitCommands(this));
 
         getServer().getPluginManager().registerEvents(caseClick, this);
         getServer().getPluginManager().registerEvents(useChest, this);
@@ -81,9 +86,10 @@ public final class MDrop extends JavaPlugin {
             join.load(i);
         }
         every.every();
+        ess = (Essentials) Essentials.getProvidingPlugin(Essentials.class);
     }
 
-    @Override
-    public void onDisable() {
-    }
+    public static Essentials ess;
+
+
 }

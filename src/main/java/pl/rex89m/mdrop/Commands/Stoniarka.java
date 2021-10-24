@@ -12,22 +12,24 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class Stoniarka implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length==1){
-            Player target = Bukkit.getPlayer(args[0]);
-            ItemStack itemStack = new ItemStack(Material.ENDER_STONE);
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(pl.rex89m.mdrop.Stoniarka.Stoniarka.getName());
-            itemMeta.setLore(pl.rex89m.mdrop.Stoniarka.Stoniarka.getLore());
-            itemStack.setItemMeta(itemMeta);
-            target.getInventory().addItem(itemStack);
-        }else{
-            Player target = (Player) sender;
-            ItemStack itemStack = new ItemStack(Material.ENDER_STONE);
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(pl.rex89m.mdrop.Stoniarka.Stoniarka.getName());
-            itemMeta.setLore(pl.rex89m.mdrop.Stoniarka.Stoniarka.getLore());
-            itemStack.setItemMeta(itemMeta);
-            target.getInventory().addItem(itemStack);
+        if (sender.hasPermission("stoniarka.give")) {
+            if (args.length == 1) {
+                Player target = Bukkit.getPlayer(args[0]);
+                ItemStack itemStack = new ItemStack(Material.ENDER_STONE);
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setDisplayName(pl.rex89m.mdrop.Stoniarka.Stoniarka.getName());
+                itemMeta.setLore(pl.rex89m.mdrop.Stoniarka.Stoniarka.getLore());
+                itemStack.setItemMeta(itemMeta);
+                target.getInventory().addItem(itemStack);
+            } else {
+                Player target = (Player) sender;
+                ItemStack itemStack = new ItemStack(Material.ENDER_STONE);
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setDisplayName(pl.rex89m.mdrop.Stoniarka.Stoniarka.getName());
+                itemMeta.setLore(pl.rex89m.mdrop.Stoniarka.Stoniarka.getLore());
+                itemStack.setItemMeta(itemMeta);
+                target.getInventory().addItem(itemStack);
+            }
         }
         return false;
     }

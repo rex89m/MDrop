@@ -1,8 +1,13 @@
 package pl.rex89m.mdrop.AntyLog;
 
+import net.minecraft.server.v1_8_R3.ChatComponentText;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import pl.rex89m.mdrop.BossBar.Bossy;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 import pl.rex89m.mdrop.MDrop;
 import pl.rex89m.mdrop.Player.PlayerSettings;
 
@@ -25,19 +30,13 @@ public class Every {
                 ArrayList<UUID> remove = new ArrayList<>();
                 for (UUID i : PlayerSettings.antyloglist){
                     PlayerSettings playerSettings = PlayerSettings.get(i);
-                    Bossy bossy = new Bossy(plugin);
                     if (playerSettings.getAntylog()>0){
                         playerSettings.setAntylogTime(playerSettings.getAntylog()-1);
                         if (Bukkit.getPlayer(i)!=null) {
-                            bossy.set(Bukkit.getPlayer(i), ChatColor.translateAlternateColorCodes('&', "&4Anty log :" + playerSettings.getAntylog()), 1F);
-                            bossy.setPercent(Bukkit.getPlayer(i), 1F); // change health/percent (between 0 and 1)
-                            bossy.show(Bukkit.getPlayer(i));
+                            sendActionText(Bukkit.getPlayer(i), ChatColor.translateAlternateColorCodes('&', "&4"+playerSettings.getAntylog()+"s"));
                         }
                     }else{
                         remove.add(i);
-                        if (Bukkit.getPlayer(i)!=null) {
-                            bossy.hide(Bukkit.getPlayer(i));
-                        }
                     }
                 }
                 for (UUID i: remove){
@@ -45,6 +44,10 @@ public class Every {
                 }
             }
         },20);
+    }
+    public void sendActionText(Player player, String message){
+        PacketPlayOutChat packet = new PacketPlayOutChat(new ChatComponentText(message), (byte)2);
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
 
 }
