@@ -1,5 +1,6 @@
 package pl.rex89m.mdrop.Commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,10 +32,15 @@ public class TopCommands implements CommandExecutor {
                         }
                     });
                     for (Map.Entry<String, Integer> i2: list){
-                        sender.sendMessage(i2.getKey() + " "+i2.getValue());
+                        sender.sendMessage(ChatColor.DARK_AQUA+i2.getKey() + " "+ChatColor.AQUA+i2.getValue());
                     }
                     break;
                 }
+            }
+        }else{
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Lista skrzyn:"));
+            for (String i: Case.getAllID()){
+                sender.sendMessage(i);
             }
         }
         return false;

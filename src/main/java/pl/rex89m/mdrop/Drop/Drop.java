@@ -11,6 +11,10 @@ public class Drop {
 
     public static int Inventory_size;
 
+    public static int Cobble_slot;
+
+    public static String Cobble_Name;
+
     private String name;
 
     private Material item;

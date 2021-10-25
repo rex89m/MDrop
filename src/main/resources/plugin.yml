@@ -9,7 +9,7 @@ depend:
 commands:
   open:
   case:
-  top:
+  topcase:
   stoniarka:
   drop:
   efekty:

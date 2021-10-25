@@ -1,6 +1,7 @@
 package pl.rex89m.mdrop.Commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -38,6 +39,17 @@ public class DropCommands implements CommandExecutor {
             stack.setItemMeta(itemMeta);
             inventory.setItem(drop.getSlot(), stack);
         }
+        if (playerSettings.getCobblestone()==null){
+            playerSettings.setCobblestone(true);
+        }
+        ItemStack itemStack = new ItemStack(Material.COBBLESTONE);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Drop.Cobble_Name));
+        if (playerSettings.getCobblestone()){
+            itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 10, false);
+        }
+        itemStack.setItemMeta(itemMeta);
+        inventory.setItem(Drop.Cobble_slot, itemStack);
         ((Player)sender).openInventory(inventory);
         return false;
     }

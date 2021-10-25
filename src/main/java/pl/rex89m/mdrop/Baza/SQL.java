@@ -38,7 +38,6 @@ public class SQL {
         try {
             conn = DriverManager.getConnection(DB_URL);
             stat = conn.createStatement();
-            System.out.println("start");
         } catch (SQLException e) {
             System.err.println("Problem z otwarciem polaczenia");
             e.printStackTrace();
@@ -49,7 +48,7 @@ public class SQL {
     public boolean createTables()  {
         String TopOpenChest = "CREATE TABLE IF NOT EXISTS TopOpenChest (ID INTEGER PRIMARY KEY AUTOINCREMENT, nick varchar(255), uuid varchar(255), case_id varchar(255), ilosc int)";
         String Stoniarka = "CREATE TABLE IF NOT EXISTS Stoniarka (ID INTEGER PRIMARY KEY AUTOINCREMENT, location varchar(255))";
-        String Settings = "CREATE TABLE IF NOT EXISTS Settings (ID INTEGER PRIMARY KEY AUTOINCREMENT, nick varchar(255), uuid varchar(255), dropvalue varchar(255))";
+        String Settings = "CREATE TABLE IF NOT EXISTS Settings (ID INTEGER PRIMARY KEY AUTOINCREMENT, nick varchar(255), uuid varchar(255), dropvalue varchar(255), cobblestone varchar(255))";
 
         try {
             stat.execute(TopOpenChest);
@@ -80,10 +79,12 @@ public class SQL {
     public void addSettingsPlayer(Player p, String settings){
         try {
             PreparedStatement prepStmt = conn.prepareStatement(
-                    "insert into Settings values (NULL, ?,?,?);");
+                    "insert into Settings values (NULL, ?,?,?,?);");
             prepStmt.setString(1, p.getName());
             prepStmt.setString(2, p.getUniqueId().toString());
             prepStmt.setString(3, settings);
+            prepStmt.setString(4, String.valueOf(true));
+
             prepStmt.execute();
             PlayerSettings playerSettings = new PlayerSettings(p);
             playerSettings.setDrop(settings);
@@ -92,6 +93,17 @@ public class SQL {
             e.printStackTrace();
         }
     }
+    public void removeSettingsPlayer(Player p){
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "DELETE FROM Settings WHERE uuid='"+p.getUniqueId()+"'");
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu settings");
+            e.printStackTrace();
+        }
+    }
+
 
     public void rmoveLocationStoniarka(Location l){
         String var = l.getWorld().getName()+"#"+l.getBlockX()+"#"+l.getBlockY()+"#"+l.getBlockZ();
@@ -127,6 +139,7 @@ public class SQL {
             while(result.next()) {
                 playerSettings = new PlayerSettings(p);
                 playerSettings.setDrop(result.getString("dropvalue"));
+                playerSettings.setCobblestone(result.getBoolean("cobblestone"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -166,12 +179,26 @@ public class SQL {
         }
         return true;
     }
+    public boolean updateSettingsDropCobblestone(Player p, Boolean bolean) {
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "UPDATE Settings SET cobblestone='"+bolean+"' WHERE uuid='"+p.getUniqueId()+"';");
+            prepStmt.execute();
+            PlayerSettings.get(p.getUniqueId()).setCobblestone(bolean);
+        } catch (SQLException e) {
+            System.err.println("Blad przy wstawianiu settings");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
 
     public boolean addTopPlayerCase(String nick, String caseNazwa) {
         try {
             int liczba = getTopPlayerCase(Bukkit.getPlayer(nick), caseNazwa);
             PreparedStatement prepStmt = conn.prepareStatement(
-                    "UPDATE TopOpenChest SET ilosc='"+liczba+1+"' WHERE uuid='"+Bukkit.getPlayer(nick).getUniqueId()+"' AND case_id='"+caseNazwa+"';");
+                    "UPDATE TopOpenChest SET ilosc='"+(liczba+1)+"' WHERE uuid='"+Bukkit.getPlayer(nick).getUniqueId()+"' AND case_id='"+caseNazwa+"';");
             prepStmt.execute();
         } catch (SQLException e) {
             System.err.println("Blad przy wstawianiu gracza "+nick);

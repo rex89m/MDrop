@@ -1,12 +1,10 @@
 package pl.rex89m.mdrop.Config;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pl.rex89m.mdrop.Case.Case;
@@ -89,7 +87,7 @@ public class Yml {
             itemStackkey.setItemMeta(itemMetakey);
             configCase.setKey(itemStackkey);
             for (String i2 :section.getConfigurationSection(i+".items").getKeys(false)){
-                ItemStack itemStack = new ItemStack(Material.getMaterial(i2), Integer.parseInt(section.getString(i+".items."+i2+".ilosc")), Short.parseShort(section.getString(i+".items."+i2+".metadata")));
+                ItemStack itemStack = new ItemStack(Material.getMaterial(section.getString(i+".items."+i2+".material")), Integer.parseInt(section.getString(i+".items."+i2+".ilosc")), Short.parseShort(section.getString(i+".items."+i2+".metadata")));
                 ItemMeta itemMeta = itemStack.getItemMeta();
                 itemMeta.setDisplayName(color(section.getString(i+".items."+i2+".name")));
                 itemMeta.setLore(color(section.getStringList(i+".items."+i2+".lore")));
@@ -102,11 +100,12 @@ public class Yml {
                     }
                 }
                 itemStack.setItemMeta(itemMeta);
+                System.out.println(itemStack.getType());
                 configCase.addItem(itemStack);
             }
         }
         for (String i : sectionDrop.getKeys(false)) {
-            if (!i.equals("name") && !i.equals("size")) {
+            if (!i.equals("name") && !i.equals("size") && !i.equals("cobble_slot") && !i.equals("cobble_name")) {
                 Drop drop = new Drop(color(sectionDrop.getString(i + ".name")), Material.getMaterial(i), Double.parseDouble(sectionDrop.getString(i + ".chance")));
                 if (sectionDrop.isSet(i + ".lore")) {
                     drop.setLore(color(sectionDrop.getStringList(i + ".lore")));
@@ -116,6 +115,9 @@ public class Yml {
             }else{
                 Drop.Inventory_name=color(sectionDrop.getString("name"));
                 Drop.Inventory_size=sectionDrop.getInt("size");
+                Drop.Cobble_slot=sectionDrop.getInt("cobble_slot");
+                Drop.Cobble_Name=sectionDrop.getString(color("cobble_name"));
+
 
             }
         }

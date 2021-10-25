@@ -40,28 +40,41 @@ public class Join implements Listener {
             }
             plugin.sql.addSettingsPlayer(e.getPlayer(), var);
         }else{
-            HashMap<String, String> var = new HashMap<>();
-            for (String i: PlayerSettings.get(e.getPlayer().getUniqueId()).getDrop().split("#")){
-                String[] var2 = i.split("@");
-                var.put(var2[0], var2[1]);
-            }
-            String varstring ="";
-            for (Material i : Drop.getDrop().keySet()) {
-                if (var.containsKey(i.name())){
-                    if (varstring.equals("")){
-                        varstring = i.name()+"@"+var.get(i.name());
-                    }else{
-                        varstring = varstring+"#"+i.name()+"@"+var.get(i.name());
-                    }
-                }else{
-                    if (varstring.equals("")){
-                        varstring = i.name()+"@true";
-                    }else{
-                        varstring = varstring+"#"+i.name()+"@true";
+            try {
+                HashMap<String, String> var = new HashMap<>();
+                for (String i : PlayerSettings.get(e.getPlayer().getUniqueId()).getDrop().split("#")) {
+                    String[] var2 = i.split("@");
+                    var.put(var2[0], var2[1]);
+                }
+                String varstring = "";
+                for (Material i : Drop.getDrop().keySet()) {
+                    if (var.containsKey(i.name())) {
+                        if (varstring.equals("")) {
+                            varstring = i.name() + "@" + var.get(i.name());
+                        } else {
+                            varstring = varstring + "#" + i.name() + "@" + var.get(i.name());
+                        }
+                    } else {
+                        if (varstring.equals("")) {
+                            varstring = i.name() + "@true";
+                        } else {
+                            varstring = varstring + "#" + i.name() + "@true";
+                        }
                     }
                 }
+                plugin.sql.updateSettingsDrop(e.getPlayer(), varstring);
+            } catch (Exception exception) {
+                String var ="";
+                for (Material i : Drop.getDrop().keySet()){
+                    if (var.equals("")){
+                        var= i.name()+"@true";
+                    }else {
+                        var = var+"#"+i.name()+"@true";
+                    }
+                }
+                plugin.sql.removeSettingsPlayer(e.getPlayer());
+                plugin.sql.addSettingsPlayer(e.getPlayer(), var);
             }
-            plugin.sql.updateSettingsDrop(e.getPlayer(), varstring);
         }
     }
 }

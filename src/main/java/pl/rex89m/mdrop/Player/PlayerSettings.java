@@ -12,7 +12,17 @@ public class PlayerSettings {
 
     private String nick;
 
+    private Boolean cobblestone;
+
     private String drop;
+
+    public Boolean getCobblestone() {
+        return cobblestone;
+    }
+
+    public void setCobblestone(Boolean cobblestone) {
+        this.cobblestone = cobblestone;
+    }
 
     private int antylog;
 

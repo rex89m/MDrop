@@ -34,18 +34,18 @@ public class KitCommands implements CommandExecutor {
     @SneakyThrows
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length==1) {
+        User user = MDrop.ess.getUser(sender);
+        if (args.length == 1) {
             if (MDrop.ess.getKits().getKit(args[0]) != null) {
                 Kit kit = new Kit(args[0], MDrop.ess);
-                User user = MDrop.ess.getUser(sender);
                 IText input = new SimpleTextInput(kit.getItems());
                 IText output = new KeywordReplacer(input, user.getSource(), MDrop.ess, true, true);
                 KitClaimEvent event = new KitClaimEvent(user, kit);
                 Bukkit.getPluginManager().callEvent(event);
                 if (event.isCancelled()) {
                     return false;
-                }else {
-                    if (!user.isAuthorized("mdrop.kit." + args[0])) {
+                } else {
+                    if (!user.isAuthorized("essentials.kits." + args[0])) {
                         user.sendMessage(I18n.tl("noKitPermission", new Object[]{args[0]}));
                         return false;
                     }
@@ -67,13 +67,12 @@ public class KitCommands implements CommandExecutor {
                     ItemStack itemStack;
                     while (var13.hasNext()) {
                         String kitItem = (String) var13.next();
-                        ItemStack stack;
+                        ItemStack stack = null;
                         if (kitItem.startsWith("@")) {
                             if (MDrop.ess.getSerializationProvider() == null) {
                                 MDrop.ess.getLogger().log(Level.WARNING, I18n.tl("kitError3", new Object[]{args[0], user.getName()}));
                                 continue;
                             }
-
                             stack = MDrop.ess.getSerializationProvider().deserializeItem(Base64Coder.decodeLines(kitItem.substring(1)));
                         } else {
                             String[] parts = kitItem.split(" +");
@@ -86,9 +85,10 @@ public class KitCommands implements CommandExecutor {
                             if (parts.length > 2) {
                                 metaStack.parseStringMeta((CommandSource) null, true, parts, 2, MDrop.ess);
                             }
-
-                            stack = metaStack.getItemStack();
-                            inventory.addItem(itemStack);
+                            if (stack==null) {
+                                stack = metaStack.getItemStack();
+                            }
+                            inventory.addItem(stack);
                         }
 
                     }
@@ -98,6 +98,12 @@ public class KitCommands implements CommandExecutor {
                     //InventoryWorkaround.addItems(user.getBase().getInventory(), (ItemStack[])kit.getItems().toArray(new ItemStack[0]));
                     user.getBase().openInventory(inventory);
                 }
+            }
+        }
+        else {
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Lista zestawow:"));
+            for (String i : MDrop.ess.getKits().listKits(MDrop.ess, user).split(" ")){
+                sender.sendMessage(i);
             }
         }
         return false;

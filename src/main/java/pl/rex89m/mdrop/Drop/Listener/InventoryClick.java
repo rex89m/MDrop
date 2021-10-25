@@ -26,22 +26,35 @@ public class InventoryClick implements Listener {
                 if (e.getCurrentItem().getType()!=null) {
                     if (e.getCurrentItem().getItemMeta()!=null) {
                         PlayerSettings playerSettings = PlayerSettings.get(e.getWhoClicked().getUniqueId());
-                        for (String i : playerSettings.getDrop().split("#")) {
-                            String[] var = i.split("@");
-                            if (e.getCurrentItem().getType().name().equals(var[0])) {
-                                if (var[1].equals("true")){
-                                    ItemMeta itemMeta = e.getCurrentItem().getItemMeta();
-                                    itemMeta.removeEnchant(Enchantment.DAMAGE_ALL);
-                                    e.getCurrentItem().setItemMeta(itemMeta);
-                                }else{
-                                    ItemMeta itemMeta = e.getCurrentItem().getItemMeta();
-                                    itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 10 ,false);
-                                    e.getCurrentItem().setItemMeta(itemMeta);
+                        if (e.getRawSlot()!=Drop.Cobble_slot) {
+                            for (String i : playerSettings.getDrop().split("#")) {
+                                String[] var = i.split("@");
+                                if (e.getCurrentItem().getType().name().equals(var[0])) {
+                                    if (var[1].equals("true")) {
+                                        ItemMeta itemMeta = e.getCurrentItem().getItemMeta();
+                                        itemMeta.removeEnchant(Enchantment.DAMAGE_ALL);
+                                        e.getCurrentItem().setItemMeta(itemMeta);
+                                    } else {
+                                        ItemMeta itemMeta = e.getCurrentItem().getItemMeta();
+                                        itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 10, false);
+                                        e.getCurrentItem().setItemMeta(itemMeta);
+                                    }
+                                    String var3 = playerSettings.getDrop();
+                                    plugin.sql.updateSettingsDrop((Player) e.getWhoClicked(), var3.replaceAll(e.getCurrentItem().getType().name() + "@" + var[1], e.getCurrentItem().getType().name() + "@" + !Boolean.parseBoolean(var[1])));
+                                    break;
                                 }
-                                String var3 = playerSettings.getDrop();
-                                plugin.sql.updateSettingsDrop((Player) e.getWhoClicked(), var3.replaceAll(e.getCurrentItem().getType().name() + "@" + var[1], e.getCurrentItem().getType().name() + "@" + !Boolean.parseBoolean(var[1])));
-                                break;
                             }
+                        }else{
+                            if (playerSettings.getCobblestone()) {
+                                ItemMeta itemMeta = e.getCurrentItem().getItemMeta();
+                                itemMeta.removeEnchant(Enchantment.DAMAGE_ALL);
+                                e.getCurrentItem().setItemMeta(itemMeta);
+                            } else {
+                                ItemMeta itemMeta = e.getCurrentItem().getItemMeta();
+                                itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 10, false);
+                                e.getCurrentItem().setItemMeta(itemMeta);
+                            }
+                            plugin.sql.updateSettingsDropCobblestone((Player) e.getWhoClicked(), !playerSettings.getCobblestone());
                         }
                     }
                 }

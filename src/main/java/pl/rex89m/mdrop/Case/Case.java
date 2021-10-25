@@ -77,7 +77,6 @@ public class Case {
     private static HashMap<String, Case> save = new HashMap<>();
     private static ArrayList<String> idall = new ArrayList<>();
 
-
     public Case(String id, String name){
         if (!idall.equals(id)){
             idall.add(id);
