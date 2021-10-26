@@ -48,12 +48,14 @@ public class SQL {
     public boolean createTables()  {
         String TopOpenChest = "CREATE TABLE IF NOT EXISTS TopOpenChest (ID INTEGER PRIMARY KEY AUTOINCREMENT, nick varchar(255), uuid varchar(255), case_id varchar(255), ilosc int)";
         String Stoniarka = "CREATE TABLE IF NOT EXISTS Stoniarka (ID INTEGER PRIMARY KEY AUTOINCREMENT, location varchar(255))";
+        String Stoniarkaplus = "CREATE TABLE IF NOT EXISTS Stoniarkaplus (ID INTEGER PRIMARY KEY AUTOINCREMENT, location varchar(255))";
         String Settings = "CREATE TABLE IF NOT EXISTS Settings (ID INTEGER PRIMARY KEY AUTOINCREMENT, nick varchar(255), uuid varchar(255), dropvalue varchar(255), cobblestone varchar(255))";
 
         try {
             stat.execute(TopOpenChest);
             stat.execute(Stoniarka);
             stat.execute(Settings);
+            stat.execute(Stoniarkaplus);
         } catch (SQLException e) {
             System.err.println("Blad przy tworzeniu tabeli");
             e.printStackTrace();
@@ -71,7 +73,21 @@ public class SQL {
             prepStmt.execute();
             Stoniarka.addLocation(l);
         } catch (SQLException e) {
-            System.err.println("Blad przy dodawaniu Stoniarki");
+            System.err.println("Blad przy dodawaniu Stoniarka");
+            e.printStackTrace();
+        }
+    }
+
+    public void addLocationStoniarkaplus(Location l){
+        String var = l.getWorld().getName()+"#"+l.getBlockX()+"#"+l.getBlockY()+"#"+l.getBlockZ();
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into Stoniarkaplus values (NULL, ?);");
+            prepStmt.setString(1, var);
+            prepStmt.execute();
+            Stoniarka.addLocation(l, true);
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu Stoniarka plus");
             e.printStackTrace();
         }
     }
@@ -104,7 +120,6 @@ public class SQL {
         }
     }
 
-
     public void rmoveLocationStoniarka(Location l){
         String var = l.getWorld().getName()+"#"+l.getBlockX()+"#"+l.getBlockY()+"#"+l.getBlockZ();
         try {
@@ -115,12 +130,41 @@ public class SQL {
             System.err.println("Blad przy usuwaniu Stoniarki");
             e.printStackTrace();
         }
+        Stoniarka.removeStoniarka(l);
+    }
+
+    public void rmoveLocationStoniarkaplus(Location l){
+        String var = l.getWorld().getName()+"#"+l.getBlockX()+"#"+l.getBlockY()+"#"+l.getBlockZ();
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "DELETE FROM Stoniarkaplus WHERE location='"+var+"';");
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy usuwaniu Stoniarki plus");
+            e.printStackTrace();
+        }
+        Stoniarka.removeStoniarka(l, true);
     }
 
     public HashMap<Location, Boolean> getAllStoniarka() {
         HashMap<Location, Boolean> var = new HashMap<>();
         try {
             ResultSet result = stat.executeQuery("SELECT * FROM Stoniarka");
+            while(result.next()) {
+                String[] varloc = result.getString("location").split("#");
+                var.put(new Location(Bukkit.getWorld(varloc[0]), Integer.parseInt(varloc[1]), Integer.parseInt(varloc[2]), Integer.parseInt(varloc[3])), true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return var;
+        }
+        return var;
+    }
+
+    public HashMap<Location, Boolean> getAllStoniarkaplus() {
+        HashMap<Location, Boolean> var = new HashMap<>();
+        try {
+            ResultSet result = stat.executeQuery("SELECT * FROM Stoniarkaplus");
             while(result.next()) {
                 String[] varloc = result.getString("location").split("#");
                 var.put(new Location(Bukkit.getWorld(varloc[0]), Integer.parseInt(varloc[1]), Integer.parseInt(varloc[2]), Integer.parseInt(varloc[3])), true);
@@ -146,7 +190,6 @@ public class SQL {
         }
         return playerSettings;
     }
-
 
     public boolean inserPlayerTopCase(String nick, String caseNazwa) {
         if (!hasPlayerCaseTop(nick, caseNazwa)) {
@@ -179,6 +222,7 @@ public class SQL {
         }
         return true;
     }
+
     public boolean updateSettingsDropCobblestone(Player p, Boolean bolean) {
         try {
             PreparedStatement prepStmt = conn.prepareStatement(
@@ -192,7 +236,6 @@ public class SQL {
         }
         return true;
     }
-
 
     public boolean addTopPlayerCase(String nick, String caseNazwa) {
         try {
@@ -235,7 +278,6 @@ public class SQL {
         }
         return var;
     }
-
 
     private boolean hasTopPlayerCase(String p) {
         String var = "";

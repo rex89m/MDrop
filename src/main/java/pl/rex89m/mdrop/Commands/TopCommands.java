@@ -31,8 +31,13 @@ public class TopCommands implements CommandExecutor {
                             return o2.getValue().compareTo(o1.getValue());
                         }
                     });
+                    int liczba;
                     for (Map.Entry<String, Integer> i2: list){
-                        sender.sendMessage(ChatColor.DARK_AQUA+i2.getKey() + " "+ChatColor.AQUA+i2.getValue());
+                        liczba=+1;
+                        if (liczba>10){
+                            break;
+                        }
+                        sender.sendMessage(ChatColor.GRAY+String.valueOf(liczba)+ChatColor.DARK_GRAY+". "+ChatColor.DARK_AQUA+i2.getKey() + " "+ChatColor.AQUA+i2.getValue());
                     }
                     break;
                 }

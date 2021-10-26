@@ -42,6 +42,28 @@ public class BreakStoniarka implements Listener {
                             }, 20);
                         }
                     }
+                }else{
+                    if (Stoniarka.isStoniarka(e.getBlock().getLocation(), true)) {
+                        if (e.getPlayer().getInventory().getItemInHand() != null) {
+                            if (e.getPlayer().getInventory().getItemInHand().getType() == Material.GOLD_PICKAXE) {
+                                plugin.sql.rmoveLocationStoniarkaplus(e.getBlock().getLocation());
+                                e.getPlayer().sendMessage(Stoniarka.getBreakMessage());
+                                ItemStack itemStack = new ItemStack(Material.ENDER_STONE);
+                                ItemMeta itemMeta = itemStack.getItemMeta();
+                                itemMeta.setDisplayName(pl.rex89m.mdrop.Stoniarka.Stoniarka.getName()+"+");
+                                itemMeta.setLore(pl.rex89m.mdrop.Stoniarka.Stoniarka.getLore());
+                                itemStack.setItemMeta(itemMeta);
+                                e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), itemStack);
+                            } else {
+                                Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        e.getBlock().setType(Material.STONE);
+                                    }
+                                }, 10);
+                            }
+                        }
+                    }
                 }
             }
         }

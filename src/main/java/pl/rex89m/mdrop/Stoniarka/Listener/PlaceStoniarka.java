@@ -25,6 +25,12 @@ public class PlaceStoniarka implements Listener {
                             e.getBlock().setType(Material.STONE);
                             plugin.sql.addLocationStoniarka(e.getBlockPlaced().getLocation());
                             e.getPlayer().sendMessage(Stoniarka.getPlaceMessage());
+                        }else{
+                            if (e.getItemInHand().getItemMeta().getDisplayName().equals(Stoniarka.getName()+"+")){
+                                e.getBlock().setType(Material.STONE);
+                                plugin.sql.addLocationStoniarkaplus(e.getBlockPlaced().getLocation());
+                                e.getPlayer().sendMessage(Stoniarka.getPlaceMessage());
+                            }
                         }
                     }
                 }

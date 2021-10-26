@@ -4,7 +4,6 @@ main: pl.rex89m.mdrop.MDrop
 load: STARTUP
 authors: [ rex89m ]
 depend:
-  - BossBarAPI
   - Essentials
 commands:
   open:
@@ -14,3 +13,4 @@ commands:
   drop:
   efekty:
   kit:
+  additem:

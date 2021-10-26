@@ -18,15 +18,15 @@ public class Chat implements Listener {
         this.plugin = plugin;
     }
 
-    String format = "{PKT} {ranga} {nick} {message}";
+    String format = "[{PKT}] {ranga} {nick} >> {message}";
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent e) {
         User user = User.get(e.getPlayer().getUniqueId());
         if (e.getPlayer().hasPermission("mdrop.chat.color")) {
-            e.setFormat(ChatColor.translateAlternateColorCodes('&', format.replaceFirst("\\{ranga}", Objects.requireNonNull(plugin.luckPerms.getGroupManager().getGroup(plugin.luckPerms.getUserManager().getUser(e.getPlayer().getUniqueId()).getPrimaryGroup()).getCachedData().getMetaData().getPrefix())).replaceFirst("\\{nick}", "&r"+e.getPlayer().getName()).replaceFirst("\\{message}", "&r"+e.getMessage()).replaceFirst("\\{PKT}", String.valueOf(user.getRank().getPoints()))));
+            e.setFormat(ChatColor.translateAlternateColorCodes('&', format.replaceFirst("\\{ranga}", Objects.requireNonNull(plugin.luckPerms.getGroupManager().getGroup(plugin.luckPerms.getUserManager().getUser(e.getPlayer().getUniqueId()).getPrimaryGroup()).getCachedData().getMetaData().getPrefix())).replaceFirst("\\{nick}", "&r"+e.getPlayer().getName()).replaceFirst("\\{message}", "&r"+e.getMessage()).replaceFirst("\\{PKT}", String.valueOf(user.getRank().getPoints()))).replace(">>", "\u00BB"));
         }else{
-            e.setFormat(ChatColor.translateAlternateColorCodes('&', format.replaceFirst("\\{ranga}", Objects.requireNonNull(plugin.luckPerms.getGroupManager().getGroup(plugin.luckPerms.getUserManager().getUser(e.getPlayer().getUniqueId()).getPrimaryGroup()).getCachedData().getMetaData().getPrefix()))).replaceFirst("\\{nick}", e.getPlayer().getName()).replaceFirst("\\{message}", e.getMessage()).replaceFirst("\\{PKT}", String.valueOf(user.getRank().getPoints())));
+            e.setFormat(ChatColor.translateAlternateColorCodes('&', format.replaceFirst("\\{ranga}", Objects.requireNonNull(plugin.luckPerms.getGroupManager().getGroup(plugin.luckPerms.getUserManager().getUser(e.getPlayer().getUniqueId()).getPrimaryGroup()).getCachedData().getMetaData().getPrefix()))).replaceFirst("\\{nick}", e.getPlayer().getName()).replaceFirst("\\{message}", e.getMessage()).replaceFirst("\\{PKT}", String.valueOf(user.getRank().getPoints())).replace(">>", "\u00BB"));
         }
     }
 }

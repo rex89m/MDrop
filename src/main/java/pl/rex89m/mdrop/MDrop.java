@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 import pl.rex89m.mdrop.AntyLog.AntyLogListener;
 import pl.rex89m.mdrop.AntyLog.Every;
 import pl.rex89m.mdrop.Baza.SQL;
@@ -15,6 +14,8 @@ import pl.rex89m.mdrop.Case.Listener.CaseClick;
 import pl.rex89m.mdrop.Case.Listener.UseChest;
 import pl.rex89m.mdrop.Commands.*;
 import pl.rex89m.mdrop.Config.Yml;
+import pl.rex89m.mdrop.Crafting.Crafting;
+import pl.rex89m.mdrop.Crafting.Listener.Events;
 import pl.rex89m.mdrop.Drop.Listener.DropEvent;
 import pl.rex89m.mdrop.Drop.Listener.InventoryClick;
 import pl.rex89m.mdrop.Events.Chat;
@@ -41,7 +42,14 @@ public final class MDrop extends JavaPlugin {
     public final Effekty effekty;
     public final KitCommands kitCommands;
     public final Chat chat;
+    public final AddItemCommands addItemCommands;
+    public final Crafting crafting;
+    public final Events events;
+
+
+
     public LuckPerms luckPerms;
+
     public MDrop(){
         this.caseOpen= new CaseOpen(this);
         this.yml= new Yml(this);
@@ -60,6 +68,10 @@ public final class MDrop extends JavaPlugin {
         this.effekty = new Effekty(this);
         this.kitCommands = new KitCommands(this);
         this.chat = new Chat(this);
+        this.addItemCommands = new AddItemCommands(this);
+        this.crafting = new Crafting(this);
+        this.events = new Events(this);
+
     }
 
     @Override
@@ -71,6 +83,7 @@ public final class MDrop extends JavaPlugin {
         getCommand("drop").setExecutor(new DropCommands());
         getCommand("efekty").setExecutor(new EffectCommands());
         getCommand("kit").setExecutor(new KitCommands(this));
+        getCommand("additem").setExecutor(new AddItemCommands(this));
 
         getServer().getPluginManager().registerEvents(caseClick, this);
         getServer().getPluginManager().registerEvents(useChest, this);
@@ -82,10 +95,13 @@ public final class MDrop extends JavaPlugin {
         getServer().getPluginManager().registerEvents(antyLogListener, this);
         getServer().getPluginManager().registerEvents(effekty, this);
         getServer().getPluginManager().registerEvents(chat, this);
+        getServer().getPluginManager().registerEvents(events, this);
+
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         luckPerms=provider.getProvider();
 
         pl.rex89m.mdrop.Stoniarka.Stoniarka.setIsStoniarka(sql.getAllStoniarka());
+        pl.rex89m.mdrop.Stoniarka.Stoniarka.setIsStoniarka(sql.getAllStoniarkaplus(), true);
 
         for (Player i: Bukkit.getOnlinePlayers()){
             join.load(i);
@@ -95,6 +111,5 @@ public final class MDrop extends JavaPlugin {
     }
 
     public static Essentials ess;
-
 
 }

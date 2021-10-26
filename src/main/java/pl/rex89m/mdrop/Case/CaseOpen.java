@@ -27,7 +27,7 @@ public class CaseOpen {
         System.out.println(p.getInventory().firstEmpty());
         if (p.getInventory().firstEmpty()!=-1) {
             Random random = new Random();
-            playerOpenCase.put(p, random.nextInt(15) + Case.get(id).getItems().size());
+            playerOpenCase.put(p, random.nextInt(10) + Case.get(id).getItems().size()+10);
             Inventory inventory = Bukkit.createInventory(p, 27, Case.get(id).getName());
             for (int i = 0; i < 27; i++) {
                 inventory.setItem(i, new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15));

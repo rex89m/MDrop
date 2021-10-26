@@ -1,5 +1,6 @@
 package pl.rex89m.mdrop.Config;
 
+import lombok.SneakyThrows;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -14,6 +15,8 @@ import pl.rex89m.mdrop.Stoniarka.Stoniarka;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class Yml {
@@ -71,7 +74,6 @@ public class Yml {
         }else{
             sectionDrop = configuration.createSection("drop");
         }
-
         for (String i :section.getKeys(false)){
             Case configCase = new Case(i, color(section.getString(i+".name_Inventory")));
             ItemStack itemStackChest = new ItemStack(Material.getMaterial(section.getString(i+".material_chest")));
@@ -86,22 +88,29 @@ public class Yml {
             itemMetakey.setLore(color(section.getStringList(i+".lore_key")));
             itemStackkey.setItemMeta(itemMetakey);
             configCase.setKey(itemStackkey);
-            for (String i2 :section.getConfigurationSection(i+".items").getKeys(false)){
-                ItemStack itemStack = new ItemStack(Material.getMaterial(section.getString(i+".items."+i2+".material")), Integer.parseInt(section.getString(i+".items."+i2+".ilosc")), Short.parseShort(section.getString(i+".items."+i2+".metadata")));
-                ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.setDisplayName(color(section.getString(i+".items."+i2+".name")));
-                itemMeta.setLore(color(section.getStringList(i+".items."+i2+".lore")));
-                for (String i3: section.getStringList(i+".items."+i2+".enchants")) {
-                    String[] var = i3.split("#");
-                    if (var[0].equalsIgnoreCase("GLOW")){
-                        itemMeta.addEnchant(Enchantment.LUCK, 10, false);
-                    }else{
-                        itemMeta.addEnchant(Enchantment.getByName(var[0]), Integer.parseInt(var[1]), true);
+            if (section.isConfigurationSection(i+".items")) {
+                for (String i2 : section.getConfigurationSection(i + ".items").getKeys(false)) {
+                    if (section.isSet(i + ".items." + i2 + ".material") && section.isSet(i + ".items." + i2 + ".ilosc") && section.isSet(i + ".items." + i2 + ".metadata")){
+                        ItemStack itemStack = new ItemStack(Material.getMaterial(section.getString(i + ".items." + i2 + ".material")), Integer.parseInt(section.getString(i + ".items." + i2 + ".ilosc")), Short.parseShort(section.getString(i + ".items." + i2 + ".metadata")));
+                        ItemMeta itemMeta = itemStack.getItemMeta();
+                        if (section.isSet(i + ".items." + i2 + ".name")) {
+                            itemMeta.setDisplayName(color(section.getString(i + ".items." + i2 + ".name")));
+                        }
+                        if (section.isSet(i + ".items." + i2 + ".lore")) {
+                            itemMeta.setLore(color(section.getStringList(i + ".items." + i2 + ".lore")));
+                        }
+                        for (String i3 : section.getStringList(i + ".items." + i2 + ".enchants")) {
+                            String[] var = i3.split("#");
+                            if (var[0].equalsIgnoreCase("GLOW")) {
+                                itemMeta.addEnchant(Enchantment.LUCK, 10, false);
+                            } else {
+                                itemMeta.addEnchant(Enchantment.getByName(var[0]), Integer.parseInt(var[1]), true);
+                            }
+                        }
+                        itemStack.setItemMeta(itemMeta);
+                        configCase.addItem(itemStack);
                     }
                 }
-                itemStack.setItemMeta(itemMeta);
-                System.out.println(itemStack.getType());
-                configCase.addItem(itemStack);
             }
         }
         for (String i : sectionDrop.getKeys(false)) {
@@ -117,10 +126,10 @@ public class Yml {
                 Drop.Inventory_size=sectionDrop.getInt("size");
                 Drop.Cobble_slot=sectionDrop.getInt("cobble_slot");
                 Drop.Cobble_Name=sectionDrop.getString(color("cobble_name"));
-
-
             }
         }
+
+
     }
 
     public String color(String s){
@@ -132,5 +141,20 @@ public class Yml {
             lista.add(ChatColor.translateAlternateColorCodes('&',i));
         }
         return lista;
+    }
+
+    @SneakyThrows
+    public void addItemCase(String casename, String material, String name, String ilosc, byte data, List<String> lore, ArrayList<String> enchants){
+        int i=1;
+        if (Case.get(casename).getItems()!=null){
+            i = Case.get(casename).getItems().size()+1;
+        }
+        section.set("start.items."+i+".material", material);
+        section.set("start.items."+i+".name", name);
+        section.set("start.items."+i+".ilosc", ilosc);
+        section.set("start.items."+i+".metadata", data);
+        section.set("start.items."+i+".lore", lore);
+        section.set("start.items."+i+".enchants", enchants);
+        configuration.save(ymlFille);
     }
 }
