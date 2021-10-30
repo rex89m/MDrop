@@ -8,6 +8,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.rex89m.mdrop.AntyLog.AntyLogListener;
 import pl.rex89m.mdrop.AntyLog.Every;
+import pl.rex89m.mdrop.Ban.EventJoinBan;
 import pl.rex89m.mdrop.Baza.SQL;
 import pl.rex89m.mdrop.Case.CaseOpen;
 import pl.rex89m.mdrop.Case.Listener.CaseClick;
@@ -16,12 +17,14 @@ import pl.rex89m.mdrop.Commands.*;
 import pl.rex89m.mdrop.Config.Yml;
 import pl.rex89m.mdrop.Crafting.Crafting;
 import pl.rex89m.mdrop.Crafting.Listener.Events;
+import pl.rex89m.mdrop.Crafting.Listener.InventoryCraftingClick;
 import pl.rex89m.mdrop.Drop.Listener.DropEvent;
 import pl.rex89m.mdrop.Drop.Listener.InventoryClick;
 import pl.rex89m.mdrop.Events.Chat;
 import pl.rex89m.mdrop.Events.Join;
 import pl.rex89m.mdrop.Stoniarka.Listener.BreakStoniarka;
 import pl.rex89m.mdrop.Stoniarka.Listener.PlaceStoniarka;
+import pl.rex89m.mdrop.Warn.EventChatWarn;
 
 public final class MDrop extends JavaPlugin {
 
@@ -45,14 +48,19 @@ public final class MDrop extends JavaPlugin {
     public final AddItemCommands addItemCommands;
     public final Crafting crafting;
     public final Events events;
-
-
+    public final CraftingCommands craftingCommands;
+    public final InventoryCraftingClick craftingClick;
+    public final KickCommands kickCommands;
+    public final BanCommands banCommands;
+    public final WarnCommands warnCommands;
+    public final EventJoinBan eventJoinBan;
+    public final EventChatWarn eventChatWarn;
+    public final MuteCommands muteCommands;
 
     public LuckPerms luckPerms;
 
     public MDrop(){
         this.caseOpen= new CaseOpen(this);
-        this.yml= new Yml(this);
         this.open= new Open(this);
         this.caseClick= new CaseClick(this);
         this.useChest= new UseChest(this);
@@ -71,7 +79,15 @@ public final class MDrop extends JavaPlugin {
         this.addItemCommands = new AddItemCommands(this);
         this.crafting = new Crafting(this);
         this.events = new Events(this);
-
+        this.craftingCommands = new CraftingCommands(this);
+        this.craftingClick = new InventoryCraftingClick(this);
+        this.kickCommands = new KickCommands(this);
+        this.banCommands = new BanCommands(this);
+        this.warnCommands = new WarnCommands(this);
+        this.eventJoinBan= new EventJoinBan(this);
+        this.eventChatWarn= new EventChatWarn(this);
+        this.muteCommands= new MuteCommands(this);
+        this.yml= new Yml(this);
     }
 
     @Override
@@ -84,7 +100,10 @@ public final class MDrop extends JavaPlugin {
         getCommand("efekty").setExecutor(new EffectCommands());
         getCommand("kit").setExecutor(new KitCommands(this));
         getCommand("additem").setExecutor(new AddItemCommands(this));
-
+        getCommand("crafting").setExecutor(new CraftingCommands(this));
+        getCommand("kick").setExecutor(new KickCommands(this));
+        getCommand("ban").setExecutor(new BanCommands(this));
+        getCommand("warn").setExecutor(new WarnCommands(this));
         getServer().getPluginManager().registerEvents(caseClick, this);
         getServer().getPluginManager().registerEvents(useChest, this);
         getServer().getPluginManager().registerEvents(join, this);
@@ -96,6 +115,9 @@ public final class MDrop extends JavaPlugin {
         getServer().getPluginManager().registerEvents(effekty, this);
         getServer().getPluginManager().registerEvents(chat, this);
         getServer().getPluginManager().registerEvents(events, this);
+        getServer().getPluginManager().registerEvents(craftingClick, this);
+        getServer().getPluginManager().registerEvents(eventChatWarn, this);
+        getServer().getPluginManager().registerEvents(eventJoinBan, this);
 
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         luckPerms=provider.getProvider();
@@ -106,6 +128,7 @@ public final class MDrop extends JavaPlugin {
         for (Player i: Bukkit.getOnlinePlayers()){
             join.load(i);
         }
+
         every.every();
         ess = (Essentials) Essentials.getProvidingPlugin(Essentials.class);
     }

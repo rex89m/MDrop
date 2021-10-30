@@ -1,6 +1,7 @@
 package pl.rex89m.mdrop.Player;
 
 import org.bukkit.entity.Player;
+import pl.rex89m.mdrop.Ban.BanInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,15 +17,33 @@ public class PlayerSettings {
 
     private String drop;
 
+    private BanInfo banInfo;
+
+    private int antylog;
+
+    public BanInfo getBanInfo() {
+        return banInfo;
+    }
+
+    public void setBanInfo(BanInfo banInfo) {
+        this.banInfo = banInfo;
+    }
+
     public Boolean getCobblestone() {
         return cobblestone;
+    }
+
+    public boolean hasBan(){
+        if (banInfo.getDateend()==null){
+            return false;
+        }
+        return true;
     }
 
     public void setCobblestone(Boolean cobblestone) {
         this.cobblestone = cobblestone;
     }
 
-    private int antylog;
 
     public static ArrayList<UUID> antyloglist = new ArrayList<>();
 
@@ -36,6 +55,7 @@ public class PlayerSettings {
         this.antylog = antylog;
         antyloglist.add(uuid);
     }
+
     public void setAntylogTime(int antylog) {
         this.antylog = antylog;
     }

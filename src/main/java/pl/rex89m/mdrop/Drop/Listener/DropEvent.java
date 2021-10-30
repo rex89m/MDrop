@@ -64,7 +64,6 @@ public class DropEvent implements Listener {
                             public void run() {
                                 for (Entity i : e.getBlock().getWorld().getNearbyEntities(e.getBlock().getLocation(), 1, 1, 1)) {
                                     if (i.getType() == EntityType.DROPPED_ITEM) {
-                                        System.out.println(i.getType().name());
                                         i.remove();
                                         break;
                                     }

@@ -76,5 +76,6 @@ public class Join implements Listener {
                 plugin.sql.addSettingsPlayer(e.getPlayer(), var);
             }
         }
+        PlayerSettings.get(e.getPlayer().getUniqueId()).setBanInfo(plugin.sql.getPlayerbanInfo(e.getPlayer()));
     }
 }

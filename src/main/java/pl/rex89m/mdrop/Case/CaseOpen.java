@@ -24,7 +24,6 @@ public class CaseOpen {
     HashMap<Player, Integer> playerOpenCase = new HashMap<>();
 
     public void open(Player p, String id){
-        System.out.println(p.getInventory().firstEmpty());
         if (p.getInventory().firstEmpty()!=-1) {
             Random random = new Random();
             playerOpenCase.put(p, random.nextInt(10) + Case.get(id).getItems().size()+10);

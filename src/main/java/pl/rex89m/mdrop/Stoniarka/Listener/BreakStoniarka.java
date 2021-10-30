@@ -3,6 +3,7 @@ package pl.rex89m.mdrop.Stoniarka.Listener;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +19,7 @@ public class BreakStoniarka implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onBreak(BlockBreakEvent e){
         if (!e.isCancelled()) {
             if (e.getBlock().getType()== Material.STONE){

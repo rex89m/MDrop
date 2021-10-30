@@ -9,6 +9,10 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pl.rex89m.mdrop.Case.Case;
+import pl.rex89m.mdrop.Commands.BanCommands;
+import pl.rex89m.mdrop.Commands.KickCommands;
+import pl.rex89m.mdrop.Commands.MuteCommands;
+import pl.rex89m.mdrop.Commands.WarnCommands;
 import pl.rex89m.mdrop.Drop.Drop;
 import pl.rex89m.mdrop.MDrop;
 import pl.rex89m.mdrop.Stoniarka.Stoniarka;
@@ -47,6 +51,26 @@ public class Yml {
             Stoniarka.setName(color(configuration.getString("Stoniarka.name")));
         }else{
             Stoniarka.setName("error name");
+        }
+        if (configuration.isSet("Settings.kick.message")){
+            KickCommands.kickmessage = color(configuration.getString("Settings.kick.message"));
+        }else{
+            Stoniarka.setName("error kick.message");
+        }
+        if (configuration.isSet("Settings.warn.message")){
+            WarnCommands.warnmessage = color(configuration.getString("Settings.warn.message"));
+        }else{
+            Stoniarka.setName("error warn.message");
+        }
+        if (configuration.isSet("Settings.mute.message")){
+                MuteCommands.mutemessage = color(configuration.getString("Settings.mute.message"));
+        }else{
+            Stoniarka.setName("error mute.message");
+        }
+        if (configuration.isSet("Settings.ban.message")){
+            BanCommands.banmessage = color(configuration.getString("Settings.ban.message"));
+        }else{
+            Stoniarka.setName("error kick.message");
         }
         if (configuration.isSet("Stoniarka.lore")){
             Stoniarka.setLore(color(configuration.getStringList("Stoniarka.lore")));

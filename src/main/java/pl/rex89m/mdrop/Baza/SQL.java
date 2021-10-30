@@ -2,16 +2,19 @@ package pl.rex89m.mdrop.Baza;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import pl.rex89m.mdrop.Ban.Ban;
+import pl.rex89m.mdrop.Ban.BanInfo;
 import pl.rex89m.mdrop.MDrop;
 import pl.rex89m.mdrop.Player.PlayerSettings;
 import pl.rex89m.mdrop.Stoniarka.Stoniarka;
 
 import java.sql.*;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.UUID;
 
 public class SQL {
 
@@ -43,6 +46,7 @@ public class SQL {
             e.printStackTrace();
         }
         createTables();
+        getPlayerbanInfo(Bukkit.getPlayer("rex89m"));
     }
 
     public boolean createTables()  {
@@ -50,12 +54,19 @@ public class SQL {
         String Stoniarka = "CREATE TABLE IF NOT EXISTS Stoniarka (ID INTEGER PRIMARY KEY AUTOINCREMENT, location varchar(255))";
         String Stoniarkaplus = "CREATE TABLE IF NOT EXISTS Stoniarkaplus (ID INTEGER PRIMARY KEY AUTOINCREMENT, location varchar(255))";
         String Settings = "CREATE TABLE IF NOT EXISTS Settings (ID INTEGER PRIMARY KEY AUTOINCREMENT, nick varchar(255), uuid varchar(255), dropvalue varchar(255), cobblestone varchar(255))";
+        String historia = "CREATE TABLE IF NOT EXISTS history (ID INTEGER PRIMARY KEY AUTOINCREMENT, nick varchar(255), uuid varchar(255), reason varchar(255), time varchar(255), date varchar(255), typ varchar(255), owner varchar(255))";
+        String ban = "CREATE TABLE IF NOT EXISTS ban (ID INTEGER PRIMARY KEY AUTOINCREMENT, nick varchar(255), uuid varchar(255), reason varchar(255), time varchar(255), date varchar(255), owner varchar(255))";
+        String mute = "CREATE TABLE IF NOT EXISTS mute (ID INTEGER PRIMARY KEY AUTOINCREMENT, nick varchar(255), uuid varchar(255), reason varchar(255), time varchar(255),date varchar(255), owner varchar(255))";
 
         try {
             stat.execute(TopOpenChest);
             stat.execute(Stoniarka);
             stat.execute(Settings);
             stat.execute(Stoniarkaplus);
+            stat.execute(historia);
+            stat.execute(mute);
+            stat.execute(ban);
+
         } catch (SQLException e) {
             System.err.println("Blad przy tworzeniu tabeli");
             e.printStackTrace();
@@ -74,6 +85,220 @@ public class SQL {
             Stoniarka.addLocation(l);
         } catch (SQLException e) {
             System.err.println("Blad przy dodawaniu Stoniarka");
+            e.printStackTrace();
+        }
+    }
+    public void addbanPlayer(Player p,Player target, String reason, Date time){
+        try {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into ban values (NULL, ?, ?, ?, ?, ?, ?);");
+            prepStmt.setString(1, target.getName());
+            prepStmt.setString(2, target.getUniqueId().toString());
+            prepStmt.setString(3, reason);
+            prepStmt.setLong(4, time.getTime());
+            prepStmt.setString(5,simpleDateFormat.format(c.getTime()));
+            prepStmt.setString(6, p.getName());
+            prepStmt.execute();
+            addhistoryPlayer(p, target, reason, time, "BAN");
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu bana");
+            e.printStackTrace();
+        }
+    }
+    public void addbanPlayer(ConsoleCommandSender p, Player target, String reason, Date time){
+        try {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into ban values (NULL, ?, ?, ?, ?, ?, ?);");
+            prepStmt.setString(1, target.getName());
+            prepStmt.setString(2, target.getUniqueId().toString());
+            prepStmt.setString(3, reason);
+            prepStmt.setLong(4, time.getTime());
+            prepStmt.setString(5,simpleDateFormat.format(c.getTime()));
+            prepStmt.setString(6, p.getName());
+            prepStmt.execute();
+            addhistoryPlayer(p, target, reason, time, "BAN");
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu bana");
+            e.printStackTrace();
+        }
+    }
+
+
+    public void addmutePlayer(Player p,Player target, String reason, Date time){
+        try {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into mute values (NULL, ?, ?, ?, ?, ?);");
+            prepStmt.setString(1, target.getName());
+            prepStmt.setString(2, target.getUniqueId().toString());
+            prepStmt.setString(3, reason);
+            prepStmt.setLong(4, time.getTime());
+            prepStmt.setString(5,simpleDateFormat.format(c.getTime()));
+            prepStmt.setString(6, p.getName());
+            prepStmt.execute();
+            addhistoryPlayer(p, target, reason, time, "MUTE");
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu bana");
+            e.printStackTrace();
+        }
+    }
+
+
+    public void addhistoryPlayer(Player p,Player target, String reason, Date time, String typ){
+        try {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into history values (NULL, ?, ?, ?, ?, ?, ?, ?);");
+            prepStmt.setString(1, target.getName());
+            prepStmt.setString(2, target.getUniqueId().toString());
+            prepStmt.setString(3, reason);
+            prepStmt.setLong(4, time.getTime());
+            prepStmt.setString(5, simpleDateFormat.format(c.getTime()));
+            prepStmt.setString(6, typ);
+            prepStmt.setString(7, p.getName());
+
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu histori");
+            e.printStackTrace();
+        }
+    }
+    public void addhistoryPlayer(ConsoleCommandSender p,Player target, String reason, Date time, String typ){
+        try {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into history values (NULL, ?, ?, ?, ?, ?, ?, ?);");
+            prepStmt.setString(1, target.getName());
+            prepStmt.setString(2, target.getUniqueId().toString());
+            prepStmt.setString(3, reason);
+            prepStmt.setLong(4, time.getTime());
+            prepStmt.setString(5, simpleDateFormat.format(c.getTime()));
+            prepStmt.setString(6, typ);
+            prepStmt.setString(7, p.getName());
+
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu histori");
+            e.printStackTrace();
+        }
+    }
+
+
+    public void addhistoryPlayer(Player p,Player target, String reason, String time, String typ){
+        try {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into history values (NULL, ?, ?, ?, ?, ?, ?, ?);");
+            prepStmt.setString(1, target.getName());
+            prepStmt.setString(2, target.getUniqueId().toString());
+            prepStmt.setString(3, reason);
+            prepStmt.setString(4, time);
+            prepStmt.setString(5, simpleDateFormat.format(c.getTime()));
+            prepStmt.setString(6, typ);
+            prepStmt.setString(7, p.getName());
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu histori");
+            e.printStackTrace();
+        }
+    }
+    public void addhistoryPlayer(ConsoleCommandSender p,Player target, String reason, String time, String typ){
+        try {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into history values (NULL, ?, ?, ?, ?, ?, ?, ?);");
+            prepStmt.setString(1, target.getName());
+            prepStmt.setString(2, target.getUniqueId().toString());
+            prepStmt.setString(3, reason);
+            prepStmt.setString(4, time);
+            prepStmt.setString(5, simpleDateFormat.format(c.getTime()));
+            prepStmt.setString(6, typ);
+            prepStmt.setString(7, p.getName());
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu histori");
+            e.printStackTrace();
+        }
+    }
+
+    public boolean hasPlayerban(Player p){
+        boolean var = false;
+        try {
+            ResultSet result = stat.executeQuery("SELECT * FROM ban WHERE uuid='"+p.getUniqueId()+"'");
+            while(result.next()) {
+                if (!result.getString("reason").equals("") || result.getString("reason")!=null){
+                    var=true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return var;
+        }
+        return var;
+    }
+
+    public HashMap<Ban, String> getPlayerban(Player p){
+        HashMap<Ban, String> var = new HashMap<>();
+        try {
+            ResultSet result = stat.executeQuery("SELECT * FROM ban WHERE uuid='"+p.getUniqueId()+"'");
+            while(result.next()) {
+                var.put(Ban.playername, result.getString("nick"));
+                var.put(Ban.time, result.getString("time"));
+                var.put(Ban.reason, result.getString("reason"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return var;
+        }
+        return var;
+    }
+
+    public BanInfo getPlayerbanInfo(Player p){
+        BanInfo ban = new BanInfo();
+        try {
+            ResultSet result = stat.executeQuery("SELECT * FROM ban WHERE uuid='"+p.getUniqueId()+"'");
+            while(result.next()) {
+                ban.setPlayer(p);
+                ban.setSender(result.getString("owner"));
+                Calendar calendar = Calendar.getInstance();
+                String[] var2 = result.getString("date").split(" ");
+                String[] var3 = var2[0].split("-");
+                String[] var4 = var2[1].split(":");
+                calendar.set(Calendar.YEAR, Integer.parseInt(var3[0]));
+                calendar.set(Calendar.MONTH, Integer.parseInt(var3[1])-1);
+                calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(var3[2]));
+                calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(var4[0]));
+                calendar.set(Calendar.MINUTE, Integer.parseInt(var4[1]));
+                calendar.set(Calendar.SECOND, Integer.parseInt(var4[2]));
+                ban.setDateCreated(calendar.getTime());
+                ban.setDateend(new Date(result.getLong("time")));
+                ban.setReason(result.getString("reason"));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ban;
+        }
+        return ban;
+    }
+
+
+    public void removePlayerban(Player p){
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "DELETE FROM ban WHERE uuid='"+p.getUniqueId()+"'");
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy usuwaniu ban");
             e.printStackTrace();
         }
     }
@@ -100,7 +325,6 @@ public class SQL {
             prepStmt.setString(2, p.getUniqueId().toString());
             prepStmt.setString(3, settings);
             prepStmt.setString(4, String.valueOf(true));
-
             prepStmt.execute();
             PlayerSettings playerSettings = new PlayerSettings(p);
             playerSettings.setDrop(settings);
@@ -115,7 +339,7 @@ public class SQL {
                     "DELETE FROM Settings WHERE uuid='"+p.getUniqueId()+"'");
             prepStmt.execute();
         } catch (SQLException e) {
-            System.err.println("Blad przy dodawaniu settings");
+            System.err.println("Blad przy usuwaniu settings");
             e.printStackTrace();
         }
     }
