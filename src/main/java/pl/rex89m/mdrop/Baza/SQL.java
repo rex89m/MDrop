@@ -6,6 +6,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import pl.rex89m.mdrop.Ban.BanInfo;
+import pl.rex89m.mdrop.Kit.KitInfo;
 import pl.rex89m.mdrop.MDrop;
 import pl.rex89m.mdrop.Player.PlayerSettings;
 import pl.rex89m.mdrop.Stoniarka.Stoniarka;
@@ -13,6 +14,7 @@ import pl.rex89m.mdrop.Mute.MuteInfo;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -639,9 +641,10 @@ public class SQL {
                 playerSettings.setDrop(result.getString("dropvalue"));
                 playerSettings.setCobblestone(result.getBoolean("cobblestone"));
                 HashMap<String, Date> hashMap = new HashMap<>();
-                for (String i: result.getString("dropvalue").split("#")){
+                for (String i: result.getString("kits").split("#")){
                     String[] var = i.split("@");
-                    hashMap.put(var[0],new Date(var[1]));
+                    long l = Long.parseLong(var[1]);
+                    hashMap.put(var[0],new Date(l));
                 }
                 playerSettings.setKits(hashMap);
             }
@@ -682,12 +685,19 @@ public class SQL {
         }
         return true;
     }
+
     public boolean updateSettingsKit(Player p, String update) {
         try {
             PreparedStatement prepStmt = conn.prepareStatement(
                     "UPDATE Settings SET kits='"+update+"' WHERE uuid='"+p.getUniqueId()+"';");
             prepStmt.execute();
-            PlayerSettings.get(p.getUniqueId()).setDrop(update);
+            HashMap<String, Date> var2 = new HashMap<>();
+            for (String i: update.split("#")){
+                String[] var = i.split("@");
+                long l = Long.parseLong(var[1]);
+                var2.put(var[0], new Date(l));
+            }
+            PlayerSettings.get(p.getUniqueId()).setKits(var2);
         } catch (SQLException e) {
             System.err.println("Blad przy wstawianiu settings");
             e.printStackTrace();
@@ -695,6 +705,29 @@ public class SQL {
         }
         return true;
     }
+    public boolean updateSettingsKitDelay(Player p,String kit, Date date) {
+        try {
+            HashMap<String, Date> var = PlayerSettings.get(p.getUniqueId()).getKits();
+            var.put(kit, date);
+            String var2 ="";
+            for (String i : var.keySet()){
+                if (var2.equals("")){
+                    var2= i+"@"+var.get(i).getTime();
+                }else {
+                    var2 = var2+"#"+i+"@"+var.get(i).getTime();
+                }
+            }
+            PlayerSettings.get(p.getUniqueId()).setKitDelay(kit, date);
+            PreparedStatement prepStmt = conn.prepareStatement("UPDATE Settings SET kits='"+var2+"' WHERE uuid='"+p.getUniqueId()+"';");
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy wstawianiu settings");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
 
 
     public boolean updateSettingsDropCobblestone(Player p, Boolean bolean) {

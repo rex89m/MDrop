@@ -42,6 +42,9 @@ public class PlayerSettings {
         return true;
     }
 
+    public void setKitDelay(String kit,Date delay){
+        kits.put(kit, delay);
+    }
     public HashMap<String, Date> getKits() {
         return kits;
     }

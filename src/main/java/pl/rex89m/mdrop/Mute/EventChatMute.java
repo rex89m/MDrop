@@ -1,5 +1,6 @@
 package pl.rex89m.mdrop.Mute;
 
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -7,6 +8,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import pl.rex89m.mdrop.MDrop;
 import pl.rex89m.mdrop.Player.PlayerSettings;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class EventChatMute implements Listener {
@@ -23,6 +25,8 @@ public class EventChatMute implements Listener {
         if (settings.hasMute()) {
             if (new Date().before(settings.getMuteInfo().getDateend())) {
                 e.setCancelled(true);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                e.getPlayer().sendMessage(ChatColor.AQUA+"Poczekaj do: "+simpleDateFormat.format(settings.getMuteInfo().getDateend()));
             }else{
                 plugin.sql.removePlayerMute(e.getPlayer().getName());
             }

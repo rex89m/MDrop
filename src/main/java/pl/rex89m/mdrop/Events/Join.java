@@ -42,14 +42,17 @@ public class Join implements Listener {
                 }
             }
             String var2 ="";
+            HashMap<String, Date> var3 = new HashMap<>();
             for (String i : KitInfo.allkits){
                 if (var2.equals("")){
                     var2= i+"@"+date.getTime();
                 }else {
                     var2 = var2+"#"+i+"@"+date.getTime();
                 }
+                var3.put(i, new Date());
             }
             plugin.sql.addSettingsPlayer(e.getPlayer(), var, var2);
+            PlayerSettings.get(e.getUniqueId()).setKits(var3);
         }else{
             try {
                 HashMap<String, String> var = new HashMap<>();
@@ -120,6 +123,6 @@ public class Join implements Listener {
         }
         PlayerSettings.get(e.getPlayer().getUniqueId()).setBanInfo(plugin.sql.getPlayerbanInfo(e.getPlayer()));
         PlayerSettings.get(e.getPlayer().getUniqueId()).setMuteInfo(plugin.sql.getPlayerMuteInfo(e.getPlayer()));
-
+        System.out.println(PlayerSettings.get(e.getPlayer().getUniqueId()).getKits());
     }
 }

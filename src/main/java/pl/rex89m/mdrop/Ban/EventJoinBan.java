@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import pl.rex89m.mdrop.MDrop;
 import pl.rex89m.mdrop.Player.PlayerSettings;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class EventJoinBan implements Listener {
@@ -25,8 +26,9 @@ public class EventJoinBan implements Listener {
                 e.getPlayer().kickPlayer(ChatColor.translateAlternateColorCodes('&', settings.getBanInfo().getReason()));
                 e.setJoinMessage("");
             } else {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 if (new Date().before(settings.getBanInfo().getDateend())) {
-                    e.getPlayer().kickPlayer(ChatColor.translateAlternateColorCodes('&', settings.getBanInfo().getReason()));
+                    e.getPlayer().kickPlayer(ChatColor.translateAlternateColorCodes('&', settings.getBanInfo().getReason())+"\n"+simpleDateFormat.format(settings.getBanInfo().getDateend()));
                     e.setJoinMessage("");
                 } else {
                     plugin.sql.removePlayerban(e.getPlayer().getName());
