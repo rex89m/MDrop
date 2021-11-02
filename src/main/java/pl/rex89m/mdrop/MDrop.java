@@ -1,6 +1,7 @@
 package pl.rex89m.mdrop;
 
 import com.earth2me.essentials.Essentials;
+import lombok.SneakyThrows;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -24,7 +25,9 @@ import pl.rex89m.mdrop.Events.Chat;
 import pl.rex89m.mdrop.Events.Join;
 import pl.rex89m.mdrop.Stoniarka.Listener.BreakStoniarka;
 import pl.rex89m.mdrop.Stoniarka.Listener.PlaceStoniarka;
-import pl.rex89m.mdrop.Warn.EventChatWarn;
+import pl.rex89m.mdrop.Mute.EventChatMute;
+import pl.rex89m.mdrop.Void.EventVoid;
+import pl.rex89m.mdrop.Void.VoidGui;
 
 public final class MDrop extends JavaPlugin {
 
@@ -54,8 +57,15 @@ public final class MDrop extends JavaPlugin {
     public final BanCommands banCommands;
     public final WarnCommands warnCommands;
     public final EventJoinBan eventJoinBan;
-    public final EventChatWarn eventChatWarn;
+    public final EventChatMute eventChatMute;
     public final MuteCommands muteCommands;
+    public final UnMuteCommands unMuteCommands;
+    public final UnBanCommands unBanCommands;
+    public final VoidGui voidGui;
+    public final EventVoid eventVoid;
+    public final VoidCommands voidCommands;
+    public final CreateKitCommands createKitCommands;
+
 
     public LuckPerms luckPerms;
 
@@ -85,11 +95,19 @@ public final class MDrop extends JavaPlugin {
         this.banCommands = new BanCommands(this);
         this.warnCommands = new WarnCommands(this);
         this.eventJoinBan= new EventJoinBan(this);
-        this.eventChatWarn= new EventChatWarn(this);
+        this.eventChatMute= new EventChatMute(this);
         this.muteCommands= new MuteCommands(this);
+        this.unBanCommands= new UnBanCommands(this);
+        this.unMuteCommands= new UnMuteCommands(this);
+        this.voidGui= new VoidGui(this);
+        this.eventVoid= new EventVoid(this);
+        this.voidCommands= new VoidCommands(this);
+        this.createKitCommands= new CreateKitCommands(this);
+
         this.yml= new Yml(this);
     }
 
+    @SneakyThrows
     @Override
     public void onEnable() {
         getCommand("open").setExecutor(new Open(this));
@@ -104,6 +122,12 @@ public final class MDrop extends JavaPlugin {
         getCommand("kick").setExecutor(new KickCommands(this));
         getCommand("ban").setExecutor(new BanCommands(this));
         getCommand("warn").setExecutor(new WarnCommands(this));
+        getCommand("mute").setExecutor(new MuteCommands(this));
+        getCommand("unban").setExecutor(new UnBanCommands(this));
+        getCommand("unmute").setExecutor(new UnMuteCommands(this));
+        getCommand("otchlan").setExecutor(new VoidCommands(this));
+        getCommand("createkit").setExecutor(new CreateKitCommands(this));
+
         getServer().getPluginManager().registerEvents(caseClick, this);
         getServer().getPluginManager().registerEvents(useChest, this);
         getServer().getPluginManager().registerEvents(join, this);
@@ -116,8 +140,9 @@ public final class MDrop extends JavaPlugin {
         getServer().getPluginManager().registerEvents(chat, this);
         getServer().getPluginManager().registerEvents(events, this);
         getServer().getPluginManager().registerEvents(craftingClick, this);
-        getServer().getPluginManager().registerEvents(eventChatWarn, this);
+        getServer().getPluginManager().registerEvents(eventChatMute, this);
         getServer().getPluginManager().registerEvents(eventJoinBan, this);
+        getServer().getPluginManager().registerEvents(eventVoid, this);
 
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         luckPerms=provider.getProvider();
@@ -131,6 +156,7 @@ public final class MDrop extends JavaPlugin {
 
         every.every();
         ess = (Essentials) Essentials.getProvidingPlugin(Essentials.class);
+
     }
 
     public static Essentials ess;

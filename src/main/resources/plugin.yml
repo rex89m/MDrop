@@ -19,3 +19,7 @@ commands:
   ban:
   warn:
   mute:
+  unban:
+  unmute:
+  otchlan:
+  createkit:

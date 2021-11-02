@@ -14,13 +14,12 @@ import pl.rex89m.mdrop.Commands.KickCommands;
 import pl.rex89m.mdrop.Commands.MuteCommands;
 import pl.rex89m.mdrop.Commands.WarnCommands;
 import pl.rex89m.mdrop.Drop.Drop;
+import pl.rex89m.mdrop.Kit.KitInfo;
 import pl.rex89m.mdrop.MDrop;
 import pl.rex89m.mdrop.Stoniarka.Stoniarka;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class Yml {
@@ -40,6 +39,7 @@ public class Yml {
 
     ConfigurationSection sectionDrop;
 
+    ConfigurationSection sectionkit;
 
     public void load() {
         if (!ymlFille.exists()){
@@ -98,6 +98,11 @@ public class Yml {
         }else{
             sectionDrop = configuration.createSection("drop");
         }
+        if (configuration.isConfigurationSection("kits")){
+            sectionkit = configuration.getConfigurationSection("kits");
+        }else{
+            sectionkit = configuration.createSection("kits");
+        }
         for (String i :section.getKeys(false)){
             Case configCase = new Case(i, color(section.getString(i+".name_Inventory")));
             ItemStack itemStackChest = new ItemStack(Material.getMaterial(section.getString(i+".material_chest")));
@@ -152,8 +157,41 @@ public class Yml {
                 Drop.Cobble_Name=sectionDrop.getString(color("cobble_name"));
             }
         }
-
-
+        for (String i : sectionkit.getKeys(false)){
+            KitInfo kit = new KitInfo(i);
+            if (sectionkit.isSet(i + ".Delay")){
+                kit.setDelay(sectionkit.getInt(i + ".Delay"));
+            }else{
+                kit.setDelay(0);
+            }
+            if (sectionkit.isSet(i + ".Permission")) {
+                kit.setPermission(sectionkit.getString(i + ".Permission"));
+            }
+            if (sectionkit.isConfigurationSection(i+".items")) {
+                for (String i2 : sectionkit.getConfigurationSection(i + ".items").getKeys(false)) {
+                    if (sectionkit.isSet(i + ".items." + i2 + ".material") && sectionkit.isSet(i + ".items." + i2 + ".ilosc") && sectionkit.isSet(i + ".items." + i2 + ".metadata")){
+                        ItemStack itemStack = new ItemStack(Material.getMaterial(sectionkit.getString(i + ".items." + i2 + ".material")), Integer.parseInt(sectionkit.getString(i + ".items." + i2 + ".ilosc")), Short.parseShort(sectionkit.getString(i + ".items." + i2 + ".metadata")));
+                        ItemMeta itemMeta = itemStack.getItemMeta();
+                        if (sectionkit.isSet(i + ".items." + i2 + ".name")) {
+                            itemMeta.setDisplayName(color(sectionkit.getString(i + ".items." + i2 + ".name")));
+                        }
+                        if (sectionkit.isSet(i + ".items." + i2 + ".lore")) {
+                            itemMeta.setLore(color(sectionkit.getStringList(i + ".items." + i2 + ".lore")));
+                        }
+                        for (String i3 : sectionkit.getStringList(i + ".items." + i2 + ".enchants")) {
+                            String[] var = i3.split("#");
+                            if (var[0].equalsIgnoreCase("GLOW")) {
+                                itemMeta.addEnchant(Enchantment.LUCK, 10, false);
+                            } else {
+                                itemMeta.addEnchant(Enchantment.getByName(var[0]), Integer.parseInt(var[1]), true);
+                            }
+                        }
+                        itemStack.setItemMeta(itemMeta);
+                        kit.addItem(itemStack);
+                    }
+                }
+            }
+        }
     }
 
     public String color(String s){
@@ -173,12 +211,48 @@ public class Yml {
         if (Case.get(casename).getItems()!=null){
             i = Case.get(casename).getItems().size()+1;
         }
-        section.set("start.items."+i+".material", material);
-        section.set("start.items."+i+".name", name);
-        section.set("start.items."+i+".ilosc", ilosc);
-        section.set("start.items."+i+".metadata", data);
-        section.set("start.items."+i+".lore", lore);
-        section.set("start.items."+i+".enchants", enchants);
+        section.set(casename+".items."+i+".material", material);
+        section.set(casename+".items."+i+".name", name);
+        section.set(casename+".items."+i+".ilosc", ilosc);
+        section.set(casename+".items."+i+".metadata", data);
+        section.set(casename+".items."+i+".lore", lore);
+        section.set(casename+".items."+i+".enchants", enchants);
         configuration.save(ymlFille);
+    }
+    @SneakyThrows
+    public void addItemKit(String kitname, String material, String name, String ilosc, byte data, List<String> lore, ArrayList<String> enchants){
+        int i=1;
+        if (KitInfo.get(kitname)!=null) {
+            if (KitInfo.get(kitname).getItems() != null) {
+                i = KitInfo.get(kitname).getItems().size() + 1;
+            }
+            sectionkit.set(kitname+".items."+i+".material", material);
+            sectionkit.set(kitname+".items."+i+".name", name);
+            sectionkit.set(kitname+".items."+i+".ilosc", ilosc);
+            sectionkit.set(kitname+".items."+i+".metadata", data);
+            sectionkit.set(kitname+".items."+i+".lore", lore);
+            sectionkit.set(kitname+".items."+i+".enchants", enchants);
+            configuration.save(ymlFille);
+            ItemStack itemStack = new ItemStack(Material.getMaterial(material), Integer.parseInt(ilosc), data);
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            itemMeta.setDisplayName(name);
+            itemMeta.setLore(lore);
+            for (String i2: enchants){
+                String[] var = i2.split("#");
+                itemMeta.addEnchant(Enchantment.getByName(var[0]), Integer.parseInt(var[1]), true);
+            }
+            itemStack.setItemMeta(itemMeta);
+            KitInfo.get(kitname).addItem(itemStack);
+        }
+    }
+
+    @SneakyThrows
+    public void createkit(String name, int delay, String permission){
+        sectionkit.set(name+".Delay", +delay);
+        sectionkit.set(name+".Permission", permission);
+        configuration.save(ymlFille);
+        KitInfo kit = new KitInfo(name);
+        kit.setPermission(permission);
+        kit.setDelay(delay);
     }
 }

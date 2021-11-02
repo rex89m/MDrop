@@ -2,8 +2,10 @@ package pl.rex89m.mdrop.Player;
 
 import org.bukkit.entity.Player;
 import pl.rex89m.mdrop.Ban.BanInfo;
+import pl.rex89m.mdrop.Mute.MuteInfo;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -19,7 +21,34 @@ public class PlayerSettings {
 
     private BanInfo banInfo;
 
+    private MuteInfo muteInfo;
+
     private int antylog;
+
+    private HashMap<String , Date> kits;
+
+    public MuteInfo getMuteInfo() {
+        return muteInfo;
+    }
+
+    public void setMuteInfo(MuteInfo muteInfo) {
+        this.muteInfo = muteInfo;
+    }
+
+    public boolean hasMute(){
+        if (muteInfo.getDateend()==null){
+            return false;
+        }
+        return true;
+    }
+
+    public HashMap<String, Date> getKits() {
+        return kits;
+    }
+
+    public void setKits(HashMap<String, Date> kits) {
+        this.kits = kits;
+    }
 
     public BanInfo getBanInfo() {
         return banInfo;
@@ -34,7 +63,7 @@ public class PlayerSettings {
     }
 
     public boolean hasBan(){
-        if (banInfo.getDateend()==null){
+        if (banInfo.getReason()==null){
             return false;
         }
         return true;
@@ -43,7 +72,6 @@ public class PlayerSettings {
     public void setCobblestone(Boolean cobblestone) {
         this.cobblestone = cobblestone;
     }
-
 
     public static ArrayList<UUID> antyloglist = new ArrayList<>();
 

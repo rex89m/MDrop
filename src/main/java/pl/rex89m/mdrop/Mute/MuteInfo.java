@@ -1,10 +1,10 @@
-package pl.rex89m.mdrop.Ban;
+package pl.rex89m.mdrop.Mute;
 
 import org.bukkit.entity.Player;
 
 import java.util.Date;
 
-public class BanInfo {
+public class MuteInfo {
 
     private Player player;
 
@@ -16,22 +16,12 @@ public class BanInfo {
 
     private Date dateend;
 
-    private boolean perm = false;
-
     public Player getPlayer() {
         return player;
     }
 
     public void setPlayer(Player player) {
         this.player = player;
-    }
-
-    public boolean hasperm(){
-        return perm;
-    }
-
-    public void setPerm(boolean perm) {
-        this.perm = perm;
     }
 
     public String getReason() {
@@ -66,5 +56,6 @@ public class BanInfo {
         this.dateend = dateend;
     }
 
-    public BanInfo() {}
+    public MuteInfo() {
+    }
 }

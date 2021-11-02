@@ -20,12 +20,17 @@ public class EventJoinBan implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e){
         PlayerSettings settings = PlayerSettings.get(e.getPlayer().getUniqueId());
-        if (settings.hasBan()){
-            if (new Date().before(settings.getBanInfo().getDateend())){
+        if (settings.hasBan()) {
+            if (settings.getBanInfo().hasperm()) {
                 e.getPlayer().kickPlayer(ChatColor.translateAlternateColorCodes('&', settings.getBanInfo().getReason()));
                 e.setJoinMessage("");
-            }else{
-                plugin.sql.removePlayerban(e.getPlayer());
+            } else {
+                if (new Date().before(settings.getBanInfo().getDateend())) {
+                    e.getPlayer().kickPlayer(ChatColor.translateAlternateColorCodes('&', settings.getBanInfo().getReason()));
+                    e.setJoinMessage("");
+                } else {
+                    plugin.sql.removePlayerban(e.getPlayer().getName());
+                }
             }
         }
     }
