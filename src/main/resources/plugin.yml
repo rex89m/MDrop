@@ -4,7 +4,7 @@ main: pl.rex89m.mdrop.MDrop
 load: STARTUP
 authors: [ rex89m ]
 depend:
-  - Essentials
+  - LuckPerms
 commands:
   open:
   case:
@@ -23,3 +23,4 @@ commands:
   unmute:
   otchlan:
   createkit:
+  tempban:

@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import pl.rex89m.mdrop.MDrop;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 public class MuteCommands implements CommandExecutor {
 
@@ -33,37 +34,49 @@ public class MuteCommands implements CommandExecutor {
                 if (plugin.luckPerms.getGroupManager().getGroup(target.getPrimaryGroup()).getWeight().getAsInt() < plugin.luckPerms.getGroupManager().getGroup(user.getPrimaryGroup()).getWeight().getAsInt()) {
                     if (args.length >= 2) {
                         if (args.length >= 3) {
+                            args[2]= args[2].toUpperCase(Locale.ROOT);
                             Calendar c = Calendar.getInstance();
-                            c.add(Calendar.MINUTE, Integer.parseInt(args[2]));
+                            if (args[2].contains("D")){
+                                c.add(Calendar.DAY_OF_YEAR, Integer.parseInt(args[2].replaceAll("D","")));
+                            }else if (args[2].contains("H")) c.add(Calendar.HOUR, Integer.parseInt(args[2].replaceAll("H","")));
+                            else if (args[2].contains("M")) c.add(Calendar.MINUTE, Integer.parseInt(args[2].replaceAll("M","")));
+                            else if (args[2].contains("S")) c.add(Calendar.SECOND, Integer.parseInt(args[2].replaceAll("S","")));
+                            else if (args[2].contains("Y")) c.add(Calendar.YEAR, Integer.parseInt(args[2].replaceAll("Y","")));
                             plugin.sql.addmutePlayer((Player) sender, targetplayer, args[1], c.getTime());
                             if (targetplayer.isOnline()) {
                                 ((Player) targetplayer).sendMessage(mutemessage.replaceFirst("%player%", sender.getName()).replaceFirst("%target%", target.getUsername()).replaceFirst("%message%", args[1]).replaceFirst("%group%", user.getPrimaryGroup()));
                             }
                         }else{
-                            sender.sendMessage(ChatColor.AQUA+"Podaj czas w minutach");
+                            sender.sendMessage(ChatColor.AQUA+"/Mute nick powod czas(1s/1m/1d/1y)");
                         }
                     }else{
-                        sender.sendMessage(ChatColor.AQUA+"Podaj powod");
+                        sender.sendMessage(ChatColor.AQUA+"/Mute nick powod czas(1s/1m/1d/1y)");
                     }
                 }
             }else{
                 if (args.length >= 2) {
                     if (args.length >= 3) {
+                        args[2]= args[2].toUpperCase(Locale.ROOT);
                         Calendar c = Calendar.getInstance();
-                        c.add(Calendar.MINUTE, Integer.parseInt(args[2]));
+                        if (args[2].contains("D")){
+                            c.add(Calendar.DAY_OF_YEAR, Integer.parseInt(args[2].replaceAll("D","")));
+                        }else if (args[2].contains("H")) c.add(Calendar.HOUR, Integer.parseInt(args[2].replaceAll("H","")));
+                        else if (args[2].contains("M")) c.add(Calendar.MINUTE, Integer.parseInt(args[2].replaceAll("M","")));
+                        else if (args[2].contains("S")) c.add(Calendar.SECOND, Integer.parseInt(args[2].replaceAll("S","")));
+                        else if (args[2].contains("Y")) c.add(Calendar.YEAR, Integer.parseInt(args[2].replaceAll("Y","")));
                         plugin.sql.addmutePlayer((ConsoleCommandSender) sender, targetplayer, args[1], c.getTime());
                         if (targetplayer.isOnline()) {
                             ((Player) targetplayer).sendMessage(mutemessage.replaceFirst("%player%", sender.getName()).replaceFirst("%target%", targetplayer.getName()).replaceFirst("%message%", args[1]).replaceFirst("%group%", ""));
                         }
                     }else{
-                        sender.sendMessage(ChatColor.AQUA+"Podaj czas w minutach");
+                        sender.sendMessage(ChatColor.AQUA+"/Mute nick powod czas(1s/1m/1d/1y)");
                     }
                 }else{
-                    sender.sendMessage(ChatColor.AQUA+"Podaj powod");
+                    sender.sendMessage(ChatColor.AQUA+"/Mute nick powod czas(1s/1m/1d/1y)");
                 }
             }
         }else{
-            sender.sendMessage(ChatColor.AQUA+"Podaj nick gracz");
+            sender.sendMessage(ChatColor.AQUA+"/Mute nick powod czas(1s/1m/1d/1y)");
         }
         return false;
     }

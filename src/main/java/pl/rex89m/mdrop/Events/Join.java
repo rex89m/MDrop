@@ -123,6 +123,8 @@ public class Join implements Listener {
         }
         PlayerSettings.get(e.getPlayer().getUniqueId()).setBanInfo(plugin.sql.getPlayerbanInfo(e.getPlayer()));
         PlayerSettings.get(e.getPlayer().getUniqueId()).setMuteInfo(plugin.sql.getPlayerMuteInfo(e.getPlayer()));
-        System.out.println(PlayerSettings.get(e.getPlayer().getUniqueId()).getKits());
+        if (PlayerSettings.get(e.getPlayer().getUniqueId()).getCobblestone()==null){
+            PlayerSettings.get(e.getPlayer().getUniqueId()).setCobblestone(true);
+        }
     }
 }

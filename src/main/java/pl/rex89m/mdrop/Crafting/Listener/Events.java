@@ -34,42 +34,46 @@ public class Events implements Listener {
     public void onPlace(BlockPlaceEvent e){
         if (!e.isCancelled()) {
             if (e.getBlockPlaced().getType() == Material.ENDER_PORTAL_FRAME) {
-                if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.RED + "FosaFarmer")) {
-                    Location location = e.getBlockPlaced().getLocation();
-                    for (int i = 0; i < 256; i++) {
-                        if (location.getWorld().getBlockAt(location).getType() != Material.BEDROCK) {
-                            location.getBlock().setType(Material.AIR);
-                            location.add(0, -1, 0);
-                        } else {
-                            break;
-                        }
-                    }
-                } else if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.RED + "BoyFarmer")) {
-                    Location location = e.getBlockPlaced().getLocation();
-                    for (int i = 0; i < 256; i++) {
-                        if (location.getWorld().getBlockAt(location).getType() != Material.BEDROCK) {
-                            location.getBlock().setType(Material.OBSIDIAN);
-                            location.add(0, -1, 0);
-                        } else {
-                            break;
-                        }
-                    }
-                } else if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "SandFarmer")) {
-                    Location location = e.getBlockPlaced().getLocation();
-                    for (int i = 0; i < 256; i++) {
-                        if (location.getWorld().getBlockAt(location).getType() != Material.BEDROCK) {
-                            location.getBlock().setType(Material.SAND);
-                            location.add(0, -1, 0);
-                        } else {
-                            break;
+                if (e.getItemInHand().hasItemMeta()) {
+                    if (e.getItemInHand().getItemMeta().hasDisplayName()) {
+                        if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.RED + "FosaFarmer")) {
+                            for (int i = 0; i < 256; i++) {
+                                if (e.getBlockPlaced().getLocation().getWorld().getBlockAt(e.getBlockPlaced().getLocation().add(0,-i,0)).getType() != Material.BEDROCK) {
+                                    e.getBlockPlaced().getLocation().add(0,-i,0).getBlock().setType(Material.AIR);
+                                } else {
+                                    break;
+                                }
+                            }
+                        } else if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.RED + "BoyFarmer")) {
+                            Location location = e.getBlockPlaced().getLocation();
+                            for (int i = 0; i < 256; i++) {
+                                if (location.getWorld().getBlockAt(location).getType() != Material.BEDROCK) {
+                                    location.getBlock().setType(Material.OBSIDIAN);
+                                    location.add(0, -1, 0);
+                                } else {
+                                    break;
+                                }
+                            }
+                        } else if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "SandFarmer")) {
+                            Location location = e.getBlockPlaced().getLocation();
+                            for (int i = 0; i < 256; i++) {
+                                if (location.getWorld().getBlockAt(location).getType() != Material.BEDROCK) {
+                                    location.getBlock().setType(Material.SAND);
+                                    location.add(0, -1, 0);
+                                } else {
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
             } else if (e.getBlock().getType() == Material.TNT){
-                if (e.getItemInHand().getItemMeta()!=null) {
-                    if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.RED + "Odpalone TNT")) {
-                        e.getBlock().setType(Material.AIR);
-                        e.getBlock().getWorld().spawnEntity(e.getBlockPlaced().getLocation(), EntityType.PRIMED_TNT);
+                if (e.getItemInHand().hasItemMeta()) {
+                    if (e.getItemInHand().getItemMeta().hasDisplayName()) {
+                        if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.RED + "Odpalone TNT")) {
+                            e.getBlock().setType(Material.AIR);
+                            e.getBlock().getWorld().spawnEntity(e.getBlockPlaced().getLocation(), EntityType.PRIMED_TNT);
+                        }
                     }
                 }
             }

@@ -1,9 +1,11 @@
 package pl.rex89m.mdrop.Drop.Listener;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -33,7 +35,6 @@ public class DropEvent implements Listener {
                         return;
                     }
                 }else{
-                    double randDouble = Math.random();
                     HashMap<String, String> var = new HashMap<>();
                     for (String i : PlayerSettings.get(e.getPlayer().getUniqueId()).getDrop().split("#")) {
                         String[] var2 = i.split("@");
@@ -43,6 +44,7 @@ public class DropEvent implements Listener {
                         if (var.containsKey(i.name())) {
                             if (var.get(i.name()).equals("true")) {
                                 Drop drop = Drop.getDrop(i);
+                                double randDouble = Math.random();
                                 if (randDouble <= drop.getChance() / 100) {
                                     ItemStack itemStack = new ItemStack(drop.getItem());
                                     ItemMeta itemMeta = itemStack.getItemMeta();
@@ -59,17 +61,8 @@ public class DropEvent implements Listener {
                         }
                     }
                     if (!PlayerSettings.get(e.getPlayer().getUniqueId()).getCobblestone()) {
-                        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-                                for (Entity i : e.getBlock().getWorld().getNearbyEntities(e.getBlock().getLocation(), 1, 1, 1)) {
-                                    if (i.getType() == EntityType.DROPPED_ITEM) {
-                                        i.remove();
-                                        break;
-                                    }
-                                }
-                            }
-                        }, 1);
+                        e.getPlayer().getItemInHand().setDurability((short) (e.getPlayer().getItemInHand().getDurability() - 1));
+                        e.getBlock().setType(Material.AIR);
                     }
                 }
             }

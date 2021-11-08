@@ -1,6 +1,5 @@
 package pl.rex89m.mdrop;
 
-import com.earth2me.essentials.Essentials;
 import lombok.SneakyThrows;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
@@ -65,7 +64,7 @@ public final class MDrop extends JavaPlugin {
     public final EventVoid eventVoid;
     public final VoidCommands voidCommands;
     public final CreateKitCommands createKitCommands;
-
+    public final TempBanCommands tempBanCommands;
 
     public LuckPerms luckPerms;
 
@@ -103,6 +102,7 @@ public final class MDrop extends JavaPlugin {
         this.eventVoid= new EventVoid(this);
         this.voidCommands= new VoidCommands(this);
         this.createKitCommands= new CreateKitCommands(this);
+        this.tempBanCommands= new TempBanCommands(this);
 
         this.yml= new Yml(this);
     }
@@ -127,6 +127,8 @@ public final class MDrop extends JavaPlugin {
         getCommand("unmute").setExecutor(new UnMuteCommands(this));
         getCommand("otchlan").setExecutor(new VoidCommands(this));
         getCommand("createkit").setExecutor(new CreateKitCommands(this));
+        getCommand("tempban").setExecutor(new TempBanCommands(this));
+
 
         getServer().getPluginManager().registerEvents(caseClick, this);
         getServer().getPluginManager().registerEvents(useChest, this);
@@ -153,12 +155,6 @@ public final class MDrop extends JavaPlugin {
         for (Player i: Bukkit.getOnlinePlayers()){
             join.load(i);
         }
-
         every.every();
-        ess = (Essentials) Essentials.getProvidingPlugin(Essentials.class);
-
     }
-
-    public static Essentials ess;
-
 }

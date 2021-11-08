@@ -26,10 +26,10 @@ public class CreateKitCommands implements CommandExecutor {
                         plugin.yml.createkit(args[0], Integer.parseInt(args[1]), "mdrop."+args[0]);
                     }
                 }else{
-                    sender.sendMessage(ChatColor.AQUA+"Podaj czas odnowienia");
+                    sender.sendMessage(ChatColor.AQUA+"/createkit nazwa czas odnowienia w sekundach");
                 }
             }else{
-                sender.sendMessage(ChatColor.AQUA+"Podaj nazwe");
+                sender.sendMessage(ChatColor.AQUA+"/createkit nazwa czas odnowienia w sekundach");
             }
         }
         return false;

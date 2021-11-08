@@ -32,13 +32,13 @@ public class WarnCommands implements CommandExecutor {
                             plugin.sql.addhistoryPlayer((Player) sender, targetplayer, args[1], "-", "WARN");
                             targetplayer.sendMessage(warnmessage.replaceFirst("%player%", sender.getName()).replaceFirst("%target%", target.getUsername()).replaceFirst("%message%", args[1]).replaceFirst("%group%", user.getPrimaryGroup()));
                         }else{
-                            sender.sendMessage(ChatColor.AQUA+"Podaj powod");
+                            sender.sendMessage(ChatColor.AQUA+"/warn nick powod");
                         }
                     }
                 }
             }
         }else{
-            sender.sendMessage(ChatColor.AQUA+"Podaj nick gracz");
+            sender.sendMessage(ChatColor.AQUA+"/warn nick powod");
         }
         return false;
     }

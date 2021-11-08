@@ -1,7 +1,7 @@
 package pl.rex89m.mdrop.Commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,6 +17,10 @@ public class CaseCommands implements CommandExecutor {
             if (args.length == 0) {
                 sender.sendMessage("Komendy:");
                 sender.sendMessage("/Case give chest/key idCase Player");
+                sender.sendMessage(ChatColor.GREEN+"Lista:");
+                for (String i: Case.getAllID()){
+                    sender.sendMessage(ChatColor.AQUA+i);
+                }
             } else if (args[0].equalsIgnoreCase("give")) {
                 if (args.length > 1) {
                     if (args[1].equalsIgnoreCase("chest")) {
@@ -24,8 +28,14 @@ public class CaseCommands implements CommandExecutor {
                             for (String i : Case.getAllID()) {
                                 if (i.equalsIgnoreCase(args[2])) {
                                     if (args.length==4){
-                                        if (Bukkit.getPlayerExact(args[3])!=null) {
-                                            Bukkit.getPlayerExact(args[3]).getInventory().addItem(Case.get(args[2]).getChest());
+                                        if (args[3].equalsIgnoreCase("all")){
+                                            for (Player i2 : Bukkit.getOnlinePlayers()){
+                                                i2.getInventory().addItem(Case.get(args[2]).getChest());
+                                            }
+                                        }else {
+                                            if (Bukkit.getPlayerExact(args[3]) != null) {
+                                                Bukkit.getPlayerExact(args[3]).getInventory().addItem(Case.get(args[2]).getChest());
+                                            }
                                         }
                                         break;
                                     }else {
@@ -42,8 +52,14 @@ public class CaseCommands implements CommandExecutor {
                             for (String i : Case.getAllID()) {
                                 if (i.equalsIgnoreCase(args[2])) {
                                     if (args.length==4){
-                                        if (Bukkit.getPlayerExact(args[3])!=null) {
-                                            Bukkit.getPlayerExact(args[3]).getInventory().addItem(Case.get(args[2]).getKey());
+                                        if (args[3].equalsIgnoreCase("all")){
+                                            for (Player i2 : Bukkit.getOnlinePlayers()){
+                                                i2.getInventory().addItem(Case.get(args[2]).getKey());
+                                            }
+                                        }else {
+                                            if (Bukkit.getPlayerExact(args[3]) != null) {
+                                                Bukkit.getPlayerExact(args[3]).getInventory().addItem(Case.get(args[2]).getKey());
+                                            }
                                         }
                                         break;
                                     }else {

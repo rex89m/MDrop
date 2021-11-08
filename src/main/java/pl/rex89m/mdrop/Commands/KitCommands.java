@@ -34,11 +34,10 @@ public class KitCommands implements CommandExecutor {
         if (args.length==1){
             for (String i: KitInfo.allkits){
                 if (i.equals(args[0])){
-                    System.out.println(PlayerSettings.get(((Player)sender).getUniqueId()).getKits().size());
                     if (new Date().after(PlayerSettings.get(((Player)sender).getUniqueId()).getKits().get(args[0]))) {
                         KitInfo kit = KitInfo.get(i);
                         if (sender.hasPermission(kit.getPermission())) {
-                            Inventory inventory = Bukkit.createInventory((InventoryHolder) sender, 9 * 3, ChatColor.BLUE + args[0]);
+                            Inventory inventory = Bukkit.createInventory((InventoryHolder) sender, 9 * 5, ChatColor.BLUE + args[0]);
                             for (ItemStack i3 : kit.getItems()) {
                                 inventory.addItem(i3);
                             }
@@ -51,7 +50,6 @@ public class KitCommands implements CommandExecutor {
                     }else{
                         Date date2 = PlayerSettings.get(((Player)sender).getUniqueId()).getKits().get(args[0]);
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
                         sender.sendMessage(ChatColor.AQUA+"Odnawi się: "+simpleDateFormat.format(date2));
                     }
                 }
