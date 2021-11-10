@@ -19,7 +19,6 @@ public class KitInfo {
         this.name = name;
         allkits.add(name);
         save.put(name, this);
-        System.out.println(name);
     }
 
     public String getName() {

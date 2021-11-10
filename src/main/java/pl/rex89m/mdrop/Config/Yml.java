@@ -46,7 +46,6 @@ public class Yml {
             plugin.saveDefaultConfig();
         }
         configuration = YamlConfiguration.loadConfiguration(ymlFille);
-
         if (configuration.isSet("Stoniarka.name")){
             Stoniarka.setName(color(configuration.getString("Stoniarka.name")));
         }else{
@@ -87,7 +86,6 @@ public class Yml {
         }else{
             Stoniarka.setName("error break_message");
         }
-
         if (configuration.isConfigurationSection("case")){
             section = configuration.getConfigurationSection("case");
         }else{
